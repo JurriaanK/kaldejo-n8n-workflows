@@ -1,0 +1,163 @@
+{
+  "0": {
+    "createdAt": "2025-09-06T12:58:53.336Z",
+    "updatedAt": "2025-09-06T13:12:40.543Z",
+    "id": "hwnEcKiEfPMr5Qml",
+    "name": "Send WorkFlow errors to Slack",
+    "active": true,
+    "isArchived": false,
+    "nodes": [
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.errorTrigger",
+        "typeVersion": 1,
+        "position": [
+          0,
+          0
+        ],
+        "id": "a45eb80e-8327-4a01-8e97-998cc36b9937",
+        "name": "Error Trigger"
+      },
+      {
+        "parameters": {
+          "authentication": "oAuth2",
+          "select": "channel",
+          "channelId": {
+            "__rl": true,
+            "value": "C09DTH53QDT",
+            "mode": "list",
+            "cachedResultName": "kaldejo-n8n-errors"
+          },
+          "text": "=This workflow {{$json[\"workflow\"][\"name\"]}} failed. Error message: {{$json[\"execution\"][\"error\"][\"message\"]}} Last node executed: {{$json[\"execution\"][\"lastNodeExecuted\"]}} View execution: {{$json[\"execution\"][\"url\"]}}",
+          "otherOptions": {}
+        },
+        "type": "n8n-nodes-base.slack",
+        "typeVersion": 2.3,
+        "position": [
+          208,
+          0
+        ],
+        "id": "347d7c80-9911-492c-a175-5bcb684d68d2",
+        "name": "Send a message",
+        "webhookId": "8ea8f958-e444-4399-a074-a774295a0a6e",
+        "credentials": {
+          "slackOAuth2Api": {
+            "id": "JneePlhp4wMB7mcO",
+            "name": "Slack account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "z2xoE8Na4uklD4DD",
+            "mode": "list",
+            "cachedResultName": "Update Workflows on Git"
+          },
+          "workflowInputs": {
+            "mappingMode": "defineBelow",
+            "value": {},
+            "matchingColumns": [],
+            "schema": [],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": true
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.2,
+        "position": [
+          192,
+          336
+        ],
+        "id": "669f5fb8-9bf5-491c-9d88-20cf05b17836",
+        "name": "Execute: Update Workflows on Git"
+      },
+      {
+        "parameters": {
+          "events": [
+            "update",
+            "activate"
+          ]
+        },
+        "type": "n8n-nodes-base.n8nTrigger",
+        "typeVersion": 1,
+        "position": [
+          16,
+          336
+        ],
+        "id": "9bf2163a-1dae-4f7c-8480-91731ab00c8f",
+        "name": "Trigger on Activate or Active Workflow Updated"
+      },
+      {
+        "parameters": {
+          "content": "Save Workflow to Git:\n- when Activated\n- when saved while active.",
+          "height": 336,
+          "width": 496
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          -80,
+          224
+        ],
+        "id": "18bca966-a649-4918-9ea2-6f9740a328b6",
+        "name": "Sticky Note"
+      }
+    ],
+    "connections": {
+      "Error Trigger": {
+        "main": [
+          [
+            {
+              "node": "Send a message",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Trigger on Activate or Active Workflow Updated": {
+        "main": [
+          [
+            {
+              "node": "Execute: Update Workflows on Git",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {},
+    "versionId": "09a2beda-2710-47b9-b956-3e234801bfc3",
+    "triggerCount": 1,
+    "tags": [],
+    "shared": [
+      {
+        "createdAt": "2025-09-06T12:58:53.336Z",
+        "updatedAt": "2025-09-06T12:58:53.336Z",
+        "role": "workflow:owner",
+        "workflowId": "hwnEcKiEfPMr5Qml",
+        "projectId": "sKh7XMvKoqNv3AgS",
+        "project": {
+          "createdAt": "2025-08-13T12:38:41.348Z",
+          "updatedAt": "2025-08-13T13:46:53.556Z",
+          "id": "sKh7XMvKoqNv3AgS",
+          "name": "Jurriaan Koops <jurriaan@kaldejo.nl>",
+          "type": "personal",
+          "icon": null,
+          "description": null
+        }
+      }
+    ]
+  }
+}
