@@ -1,10 +1,10 @@
 {
   "0": {
     "createdAt": "2025-09-06T09:29:34.864Z",
-    "updatedAt": "2025-09-06T12:03:43.128Z",
+    "updatedAt": "2025-09-06T12:30:22.964Z",
     "id": "z2xoE8Na4uklD4DD",
     "name": "Backup to git",
-    "active": false,
+    "active": true,
     "isArchived": false,
     "nodes": [
       {
@@ -56,14 +56,14 @@
           "operation": "get",
           "owner": "={{$node[\"Globals\"].json[\"repo\"][\"owner\"]}}",
           "repository": "={{$node[\"Globals\"].json[\"repo\"][\"name\"]}}",
-          "filePath": "={{$node[\"Globals\"].json[\"repo\"][\"path\"]}}{{ $json.workflow_file_name }}",
+          "filePath": "={{$node[\"Globals\"].json[\"repo\"][\"path\"]}}{{ $json.workflow_file_name }}.json",
           "asBinaryProperty": false,
           "additionalParameters": {}
         },
         "name": "GitHub",
         "type": "n8n-nodes-base.github",
         "position": [
-          1152,
+          1568,
           -336
         ],
         "typeVersion": 1,
@@ -83,7 +83,7 @@
         "name": "Merge",
         "type": "n8n-nodes-base.merge",
         "position": [
-          1456,
+          1872,
           -272
         ],
         "typeVersion": 1,
@@ -112,7 +112,7 @@
         "name": "github_status",
         "type": "n8n-nodes-base.switch",
         "position": [
-          1760,
+          2176,
           -272
         ],
         "typeVersion": 1,
@@ -123,8 +123,8 @@
         "name": "same",
         "type": "n8n-nodes-base.noOp",
         "position": [
-          1968,
-          -592
+          2384,
+          -400
         ],
         "typeVersion": 1,
         "id": "19b535d9-d146-4946-8d6f-82f94c285e69"
@@ -134,8 +134,8 @@
         "name": "different",
         "type": "n8n-nodes-base.noOp",
         "position": [
-          1968,
-          -304
+          2384,
+          -256
         ],
         "typeVersion": 1,
         "id": "c0ebf981-fbd2-4512-8d8c-4a42888f1c6c"
@@ -145,7 +145,7 @@
         "name": "new",
         "type": "n8n-nodes-base.noOp",
         "position": [
-          1968,
+          2384,
           -112
         ],
         "typeVersion": 1,
@@ -155,17 +155,25 @@
         "parameters": {
           "resource": "file",
           "operation": "edit",
-          "owner": "={{$node[\"Globals\"].json[\"repo\"][\"owner\"]}}",
-          "repository": "={{$node[\"Globals\"].json[\"repo\"][\"name\"]}}",
-          "filePath": "={{$node[\"Globals\"].json[\"repo\"][\"path\"]}}{{$node[\"N8N Workflow Detail\"].json[\"data\"][\"name\"]}}.json",
+          "owner": {
+            "__rl": true,
+            "value": "={{$node[\"Globals\"].json[\"repo\"][\"owner\"]}}",
+            "mode": "name"
+          },
+          "repository": {
+            "__rl": true,
+            "value": "={{$node[\"Globals\"].json[\"repo\"][\"name\"]}}",
+            "mode": "name"
+          },
+          "filePath": "={{ $json.path }}",
           "fileContent": "={{$node[\"isDiffOrNew1\"].json[\"n8n_data_stringy\"]}}",
-          "commitMessage": "=[N8N Backup] {{$node[\"N8N Workflow Detail\"].json[\"data\"][\"name\"]}}.json ({{$json[\"github_status\"]}})"
+          "commitMessage": "=Updated {{ $('Extract workflow info').item.json.workflow_name }} ({{$json[\"github_status\"]}})"
         },
         "name": "GitHub Edit",
         "type": "n8n-nodes-base.github",
         "position": [
-          2512,
-          -96
+          2576,
+          -256
         ],
         "typeVersion": 1,
         "id": "c25a3492-cb39-4374-951f-6d4cc7400080",
@@ -192,12 +200,12 @@
           },
           "filePath": "={{$node[\"Globals\"].json[\"repo\"][\"path\"]}}{{ $('Extract workflow info').item.json.workflow_file_name }}.json",
           "fileContent": "={{$node[\"isDiffOrNew1\"].json[\"n8n_data_stringy\"]}}",
-          "commitMessage": "=Update {{ $('Extract workflow info').item.json.workflow_name }}({{$json[\"github_status\"]}})"
+          "commitMessage": "=Added {{ $('Extract workflow info').item.json.workflow_name }} ({{$json[\"github_status\"]}})"
         },
         "name": "GitHub Create",
         "type": "n8n-nodes-base.github",
         "position": [
-          2160,
+          2576,
           -112
         ],
         "typeVersion": 1,
@@ -218,8 +226,8 @@
         "name": "OneAtATime",
         "type": "n8n-nodes-base.splitInBatches",
         "position": [
-          16,
-          -240
+          416,
+          -256
         ],
         "typeVersion": 1,
         "id": "5c2b9664-a942-4cd6-8dd5-999d2854d108"
@@ -251,8 +259,8 @@
         "name": "Globals",
         "type": "n8n-nodes-base.set",
         "position": [
-          -720,
-          -272
+          160,
+          -256
         ],
         "typeVersion": 1,
         "id": "d020d84d-0164-4e5f-85ef-f169f8c0cbf2"
@@ -264,7 +272,7 @@
         "name": "isDiffOrNew1",
         "type": "n8n-nodes-base.function",
         "position": [
-          1616,
+          2032,
           -272
         ],
         "typeVersion": 1,
@@ -277,8 +285,8 @@
         "type": "n8n-nodes-base.executeWorkflowTrigger",
         "typeVersion": 1.1,
         "position": [
-          -944,
-          -272
+          -64,
+          -256
         ],
         "id": "adec9392-5720-45c6-95f1-c4f748796a50",
         "name": "When Executed by Another Workflow"
@@ -291,21 +299,21 @@
         "type": "n8n-nodes-base.readWriteFile",
         "typeVersion": 1,
         "position": [
-          496,
-          -144
+          832,
+          -256
         ],
         "id": "a1908170-e02d-4e76-bb95-740aee241b66",
         "name": "Read/Write Files from Disk"
       },
       {
         "parameters": {
-          "command": "=n8n export:workflow --id {{ $json.workflow_id }} --output workflows/{{ $json.workflow_id }}.json\n"
+          "command": "=mkdir -p workflows && n8n export:workflow --id {{ $json.workflow_id }} --output workflows/{{ $json.workflow_id }}.json\n"
         },
         "type": "n8n-nodes-base.executeCommand",
         "typeVersion": 1,
         "position": [
-          304,
-          -144
+          640,
+          -256
         ],
         "id": "c4a572c7-6a1b-4986-a33b-045b77e5309e",
         "name": "Execute Command"
@@ -318,8 +326,8 @@
         "type": "n8n-nodes-base.extractFromFile",
         "typeVersion": 1,
         "position": [
-          640,
-          -144
+          1024,
+          -256
         ],
         "id": "ad25aff0-5a6f-4e15-83e6-8b3184531cde",
         "name": "Extract from File"
@@ -353,11 +361,24 @@
         "type": "n8n-nodes-base.set",
         "typeVersion": 3.4,
         "position": [
-          864,
+          1280,
           -336
         ],
         "id": "f1e6894b-16eb-455b-8511-d6217df500e3",
         "name": "Extract workflow info"
+      },
+      {
+        "parameters": {
+          "jsCode": "let dworkflow = $input.first().json;\ndworkflow.data[0].pinData = {};\n// Return updated workflow JSON\nreturn [ { json: dworkflow } ];"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1312,
+          -144
+        ],
+        "id": "bdbb3a64-207b-49de-b47b-90c79c08b61d",
+        "name": "Remove Pinned data"
       }
     ],
     "connections": {
@@ -385,13 +406,7 @@
       },
       "same": {
         "main": [
-          [
-            {
-              "node": "OneAtATime",
-              "type": "main",
-              "index": 0
-            }
-          ]
+          []
         ]
       },
       "Merge": {
@@ -451,24 +466,12 @@
       },
       "GitHub Edit": {
         "main": [
-          [
-            {
-              "node": "OneAtATime",
-              "type": "main",
-              "index": 0
-            }
-          ]
+          []
         ]
       },
       "GitHub Create": {
         "main": [
-          [
-            {
-              "node": "OneAtATime",
-              "type": "main",
-              "index": 0
-            }
-          ]
+          []
         ]
       },
       "github_status": {
@@ -544,12 +547,12 @@
         "main": [
           [
             {
-              "node": "Merge",
+              "node": "Extract workflow info",
               "type": "main",
-              "index": 1
+              "index": 0
             },
             {
-              "node": "Extract workflow info",
+              "node": "Remove Pinned data",
               "type": "main",
               "index": 0
             }
@@ -566,6 +569,17 @@
             }
           ]
         ]
+      },
+      "Remove Pinned data": {
+        "main": [
+          [
+            {
+              "node": "Merge",
+              "type": "main",
+              "index": 1
+            }
+          ]
+        ]
       }
     },
     "settings": {
@@ -576,8 +590,8 @@
       "templateCredsSetupCompleted": true
     },
     "pinData": {},
-    "versionId": "bf50ff3a-65e5-48d3-9190-b15ee743f741",
-    "triggerCount": 0,
+    "versionId": "d714e9cd-aaf1-4e36-9483-4bf3752df7d6",
+    "triggerCount": 1,
     "tags": [],
     "shared": [
       {
