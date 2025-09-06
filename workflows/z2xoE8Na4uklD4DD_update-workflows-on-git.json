@@ -1,10 +1,10 @@
 {
   "0": {
     "createdAt": "2025-09-06T09:29:34.864Z",
-    "updatedAt": "2025-09-06T12:39:23.800Z",
+    "updatedAt": "2025-09-06T12:56:19.607Z",
     "id": "z2xoE8Na4uklD4DD",
     "name": "Update Workflows on Git",
-    "active": false,
+    "active": true,
     "isArchived": false,
     "nodes": [
       {
@@ -122,9 +122,9 @@
             "value": "={{$node[\"Globals\"].json[\"repo\"][\"name\"]}}",
             "mode": "name"
           },
-          "filePath": "={{ $json.path }}",
+          "filePath": "={{ $('different').item.json.path }}",
           "fileContent": "={{$node[\"isDiffOrNew1\"].json[\"n8n_data_stringy\"]}}",
-          "commitMessage": "=Updated {{ $('Extract workflow info').item.json.workflow_name }} ({{$json[\"github_status\"]}})"
+          "commitMessage": "=Updated {{ $('Extract workflow info').item.json.workflow_name }} ({{ $('different').item.json.github_status }})\nChanges:\n{{ $json.text }}"
         },
         "name": "GitHub Edit",
         "type": "n8n-nodes-base.github",
@@ -398,6 +398,7 @@
       {
         "parameters": {
           "promptType": "define",
+          "text": "=<instruction>\nCompare the old version of this n8n workflow with the new one.\nOutput a compact commit message which summarizes the functional changes. Make a list if needed. Be concise, leave out non functional details.\n</instruction>\n\n<old_workflow>\n{{ $json.content_decoded.toJsonString() }}\n</old_workflow>\n\n<new_workflow>\n{{ $json.n8n_data_stringy }}\n</new_workflow>",
           "batching": {}
         },
         "type": "@n8n/n8n-nodes-langchain.chainLlm",
@@ -661,7 +662,7 @@
       "templateCredsSetupCompleted": true
     },
     "pinData": {},
-    "versionId": "44c27305-918e-4fc7-80c2-b0c7a619d771",
+    "versionId": "781c4935-8c84-479a-9dae-50ca1d5b4acc",
     "triggerCount": 1,
     "tags": [],
     "shared": [
