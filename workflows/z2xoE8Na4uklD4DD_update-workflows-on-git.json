@@ -1,28 +1,12 @@
 {
   "0": {
     "createdAt": "2025-09-06T09:29:34.864Z",
-    "updatedAt": "2025-09-06T12:32:45.092Z",
+    "updatedAt": "2025-09-06T12:34:55.000Z",
     "id": "z2xoE8Na4uklD4DD",
     "name": "Update Workflows on Git",
     "active": true,
     "isArchived": false,
     "nodes": [
-      {
-        "parameters": {
-          "events": [
-            "update",
-            "activate"
-          ]
-        },
-        "type": "n8n-nodes-base.n8nTrigger",
-        "typeVersion": 1,
-        "position": [
-          -608,
-          -656
-        ],
-        "id": "59ed8ae4-e35c-4f54-8be7-3c05e842d7cc",
-        "name": "n8n Trigger"
-      },
       {
         "parameters": {
           "resource": "file",
@@ -359,7 +343,7 @@
             "__rl": true,
             "value": "z2xoE8Na4uklD4DD",
             "mode": "list",
-            "cachedResultName": "Backup to git"
+            "cachedResultName": "Update Workflows on Git"
           },
           "workflowInputs": {
             "mappingMode": "defineBelow",
@@ -374,25 +358,45 @@
         "type": "n8n-nodes-base.executeWorkflow",
         "typeVersion": 1.2,
         "position": [
-          -400,
-          -656
+          208,
+          -528
         ],
         "id": "a6caf09d-ec05-4bc1-a4d1-3129bf2629cb",
-        "name": "Execute: Update on Git"
+        "name": "Execute: Update Workflows on Git"
+      },
+      {
+        "parameters": {
+          "events": [
+            "update",
+            "activate"
+          ]
+        },
+        "type": "n8n-nodes-base.n8nTrigger",
+        "typeVersion": 1,
+        "position": [
+          32,
+          -528
+        ],
+        "id": "59ed8ae4-e35c-4f54-8be7-3c05e842d7cc",
+        "name": "Trigger on Activate or Active Workflow Updated"
+      },
+      {
+        "parameters": {
+          "content": "Save Workflow to Git:\n- when Activated\n- when saved while active.",
+          "height": 336,
+          "width": 496
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          -64,
+          -640
+        ],
+        "id": "f1865190-7ff0-4563-b36a-f14703ccc41e",
+        "name": "Sticky Note"
       }
     ],
     "connections": {
-      "n8n Trigger": {
-        "main": [
-          [
-            {
-              "node": "Execute: Update on Git",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
-      },
       "new": {
         "main": [
           [
@@ -580,6 +584,17 @@
             }
           ]
         ]
+      },
+      "Trigger on Activate or Active Workflow Updated": {
+        "main": [
+          [
+            {
+              "node": "Execute: Update Workflows on Git",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
       }
     },
     "settings": {
@@ -590,7 +605,7 @@
       "templateCredsSetupCompleted": true
     },
     "pinData": {},
-    "versionId": "b8168f59-d570-4b98-b89d-f960383383cc",
+    "versionId": "42483374-fd7f-4b5c-8a30-246086a328de",
     "triggerCount": 1,
     "tags": [],
     "shared": [
