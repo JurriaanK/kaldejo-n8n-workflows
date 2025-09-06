@@ -1,7 +1,7 @@
 {
   "0": {
     "createdAt": "2025-09-06T09:29:34.864Z",
-    "updatedAt": "2025-09-06T12:57:28.790Z",
+    "updatedAt": "2025-09-06T13:07:36.508Z",
     "id": "z2xoE8Na4uklD4DD",
     "name": "Update Workflows on Git",
     "active": true,
@@ -657,14 +657,15 @@
     "settings": {
       "executionOrder": "v1",
       "timezone": "Europe/Amsterdam",
-      "callerPolicy": "workflowsFromSameOwner"
+      "callerPolicy": "workflowsFromSameOwner",
+      "errorWorkflow": "hwnEcKiEfPMr5Qml"
     },
     "staticData": null,
     "meta": {
       "templateCredsSetupCompleted": true
     },
     "pinData": {},
-    "versionId": "7c60fe8c-209c-47fd-8453-643f1f666d65",
+    "versionId": "44172379-05c2-4109-9e74-bebde0216d8a",
     "triggerCount": 1,
     "tags": [],
     "shared": [
