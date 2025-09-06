@@ -1,10 +1,10 @@
 {
   "0": {
     "createdAt": "2025-09-06T09:29:34.864Z",
-    "updatedAt": "2025-09-06T12:34:55.000Z",
+    "updatedAt": "2025-09-06T12:39:23.800Z",
     "id": "z2xoE8Na4uklD4DD",
     "name": "Update Workflows on Git",
-    "active": true,
+    "active": false,
     "isArchived": false,
     "nodes": [
       {
@@ -92,7 +92,7 @@
         "type": "n8n-nodes-base.noOp",
         "position": [
           2384,
-          -256
+          32
         ],
         "typeVersion": 1,
         "id": "c0ebf981-fbd2-4512-8d8c-4a42888f1c6c"
@@ -103,7 +103,7 @@
         "type": "n8n-nodes-base.noOp",
         "position": [
           2384,
-          -112
+          -240
         ],
         "typeVersion": 1,
         "id": "25e0d9d6-cf29-4667-9e2d-26880c2d7800"
@@ -129,8 +129,8 @@
         "name": "GitHub Edit",
         "type": "n8n-nodes-base.github",
         "position": [
-          2576,
-          -256
+          2864,
+          32
         ],
         "typeVersion": 1,
         "id": "c25a3492-cb39-4374-951f-6d4cc7400080",
@@ -162,8 +162,8 @@
         "name": "GitHub Create",
         "type": "n8n-nodes-base.github",
         "position": [
-          2576,
-          -112
+          2592,
+          -240
         ],
         "typeVersion": 1,
         "id": "d65a4476-12ed-492e-a9ff-3074852eab92",
@@ -331,7 +331,7 @@
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
         "position": [
-          1312,
+          1280,
           -144
         ],
         "id": "bdbb3a64-207b-49de-b47b-90c79c08b61d",
@@ -394,6 +394,40 @@
         ],
         "id": "f1865190-7ff0-4563-b36a-f14703ccc41e",
         "name": "Sticky Note"
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "batching": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.chainLlm",
+        "typeVersion": 1.7,
+        "position": [
+          2544,
+          32
+        ],
+        "id": "e3d93e80-541c-4f6d-9b8b-bc336ffd5401",
+        "name": "Basic LLM Chain"
+      },
+      {
+        "parameters": {
+          "model": "deepseek/deepseek-r1",
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+        "typeVersion": 1,
+        "position": [
+          2544,
+          192
+        ],
+        "id": "a4780c20-ddad-423d-b840-ee1672dfb446",
+        "name": "OpenRouter Chat Model",
+        "credentials": {
+          "openRouterApi": {
+            "id": "dVkSiVlmMOJqjixC",
+            "name": "OpenRouter account"
+          }
+        }
       }
     ],
     "connections": {
@@ -450,7 +484,7 @@
         "main": [
           [
             {
-              "node": "GitHub Edit",
+              "node": "Basic LLM Chain",
               "type": "main",
               "index": 0
             }
@@ -595,6 +629,28 @@
             }
           ]
         ]
+      },
+      "Basic LLM Chain": {
+        "main": [
+          [
+            {
+              "node": "GitHub Edit",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OpenRouter Chat Model": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "Basic LLM Chain",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
       }
     },
     "settings": {
@@ -605,7 +661,7 @@
       "templateCredsSetupCompleted": true
     },
     "pinData": {},
-    "versionId": "42483374-fd7f-4b5c-8a30-246086a328de",
+    "versionId": "44c27305-918e-4fc7-80c2-b0c7a619d771",
     "triggerCount": 1,
     "tags": [],
     "shared": [
