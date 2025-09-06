@@ -1,0 +1,970 @@
+{
+  "0": {
+    "createdAt": "2025-08-31T18:40:15.175Z",
+    "updatedAt": "2025-09-06T13:31:14.376Z",
+    "id": "hoZQyZyX06wZi4IJ",
+    "name": "Quote video's",
+    "active": true,
+    "isArchived": false,
+    "nodes": [
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://api.elevenlabs.io/v1/text-to-speech/hKQJeQ0pBEzU0ZIcz7Lh/with-timestamps",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "elevenLabsApi",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"text\": {{ $json.quote.toJsonString() }},\n  \"voice_settings\": {\n    \"speed\": 0.85\n  }\n} ",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -592,
+          -112
+        ],
+        "id": "51b602e5-4ce4-49c4-b552-fe55c947dac7",
+        "name": "HTTP Request",
+        "credentials": {
+          "elevenLabsApi": {
+            "id": "yz8tZ3I48GISlRvu",
+            "name": "ElevenLabs account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://api.cloudflare.com/client/v4/accounts/00fc208152f350ada543f7c987365ac9/ai/run/@cf/leonardo/lucid-origin",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "cloudflareApi",
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "prompt",
+                "value": "={{ $json.text }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -304,
+          -432
+        ],
+        "id": "4bd81176-dcd8-4789-978b-abd8465fda52",
+        "name": "HTTP Request1",
+        "credentials": {
+          "cloudflareApi": {
+            "id": "tD2pbLpXoVInylJo",
+            "name": "Cloudflare AI Worker"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "toBinary",
+          "sourceProperty": "result.image",
+          "options": {
+            "fileName": "background.png",
+            "mimeType": "image/png"
+          }
+        },
+        "type": "n8n-nodes-base.convertToFile",
+        "typeVersion": 1.1,
+        "position": [
+          -80,
+          -432
+        ],
+        "id": "637dab5a-0544-499c-b2b7-740f4e49be25",
+        "name": "Convert to File",
+        "alwaysOutputData": true
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "=Write a prompt to create a symbolic and artistic image that visually communicates the message and emotional tone of this Bible verse from {{ $json.source }}: \"{{ $json.quote }}\". \nDo not include any text in the image. \nFocus on atmosphere, symbolism, and composition that reflect the spiritual meaning and feeling of the verse.\nKeep the structure of the prompt simple and add style guidance. Make it relatable for humans.",
+          "batching": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.chainLlm",
+        "typeVersion": 1.7,
+        "position": [
+          -608,
+          -432
+        ],
+        "id": "ae6d9050-b4ca-49b6-8bf5-6aeff0d5813e",
+        "name": "Basic LLM Chain"
+      },
+      {
+        "parameters": {
+          "model": "deepseek/deepseek-r1",
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+        "typeVersion": 1,
+        "position": [
+          -640,
+          544
+        ],
+        "id": "a4f9d848-6cd9-4017-b32c-08864d06bcba",
+        "name": "OpenRouter Chat Model",
+        "credentials": {
+          "openRouterApi": {
+            "id": "dVkSiVlmMOJqjixC",
+            "name": "OpenRouter account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "numberInputs": 4
+        },
+        "type": "n8n-nodes-base.merge",
+        "typeVersion": 3.2,
+        "position": [
+          368,
+          -192
+        ],
+        "id": "3b0a6244-891e-4dae-b605-ec74f36c5093",
+        "name": "Merge"
+      },
+      {
+        "parameters": {
+          "operation": "write",
+          "fileName": "background.png",
+          "dataPropertyName": "=data",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.readWriteFile",
+        "typeVersion": 1,
+        "position": [
+          144,
+          -432
+        ],
+        "id": "362f7aad-6416-4358-b3ab-94b1c80617b9",
+        "name": "Read/Write Files from Disk1"
+      },
+      {
+        "parameters": {
+          "jsCode": "// Get the input JSON data from the previous node\nconst inputData = $input.item.json;\nconst alignment = inputData.alignment;\n\n// --- Configuration ---\nconst SHORT_WORD_MAX_LENGTH = 4;\n// --- End Configuration ---\n\n// --- Step 1: Aggregate characters into words, noting punctuation ---\nconst words = [];\nlet currentWord = { text: '', startTime: 0, endTime: 0, endsWithPunctuation: false };\nconst originalChars = inputData.alignment.characters;\n\nalignment.characters.forEach((char, index) => {\n  const startTime = alignment.character_start_times_seconds[index];\n  const endTime = alignment.character_end_times_seconds[index];\n\n  if (char.match(/[a-zA-Z0-9]/)) {\n    if (currentWord.text === '') {\n      currentWord.startTime = startTime;\n    }\n    currentWord.text += char;\n    currentWord.endTime = endTime;\n  }\n\n  if (!char.match(/[a-zA-Z0-9]/) || index === alignment.characters.length - 1) {\n    if (currentWord.text !== '') {\n      if (index < originalChars.length && !originalChars[index].match(/[a-zA-Z0-9\\s]/)) {\n          currentWord.endsWithPunctuation = true;\n      }\n      words.push(currentWord);\n      currentWord = { text: '', startTime: 0, endTime: 0, endsWithPunctuation: false };\n    }\n  }\n});\n\n// --- Step 2: Generate SRT, grouping short words ---\n\nfunction formatTime(seconds) {\n  const date = new Date(seconds * 1000);\n  const hours = String(date.getUTCHours()).padStart(2, '0');\n  const minutes = String(date.getUTCMinutes()).padStart(2, '0');\n  const secs = String(date.getUTCSeconds()).padStart(2, '0');\n  const ms = String(date.getUTCMilliseconds()).padStart(3, '0');\n  return `${hours}:${minutes}:${secs},${ms}`;\n}\n\nlet srtContent = '';\nlet subtitleIndex = 1;\nlet i = 0;\nlet lastSubtitleEndTime = 0; // Variable to track the end time of the last subtitle\n\nwhile (i < words.length) {\n  let lineText = words[i].text;\n  let lineStartTime = words[i].startTime;\n  let lineEndTime = words[i].endTime;\n\n  // Check if we can group the next word\n  const canGroup = \n    i > 0 && // Don't group if it's the very first word\n    !words[i].endsWithPunctuation && \n    words[i].text.length <= SHORT_WORD_MAX_LENGTH &&\n    words[i + 1] &&\n    words[i + 1].text.length <= SHORT_WORD_MAX_LENGTH;\n\n  if (canGroup) {\n    lineText += ` ${words[i + 1].text}`;\n    lineEndTime = words[i + 1].endTime;\n    i++; // Skip the next word in the main loop\n  }\n\n  const displayEndTime = (i + 1 < words.length) ? words[i + 1].startTime : lineEndTime;\n\n  if (displayEndTime > lineStartTime) {\n    srtContent += `${subtitleIndex}\\n`;\n    srtContent += `${formatTime(lineStartTime)} --> ${formatTime(displayEndTime)}\\n`;\n    srtContent += `${lineText}\\n\\n`;\n    subtitleIndex++;\n    lastSubtitleEndTime = displayEndTime; // Update the end time tracker\n  }\n\n  i++;\n}\n\n// --- Step 3: Add the source subtitle at the end ---\nconst sourceText = $('Get many rows').first().json.source;\n\n// Check if source text exists and there is content to add it after\nif (sourceText && words.length > 0) {\n  const sourceStartTime = lastSubtitleEndTime;\n  const sourceEndTime = sourceStartTime + 2; // Add 2 seconds duration\n\n  srtContent += `${subtitleIndex}\\n`;\n  srtContent += `${formatTime(sourceStartTime)} --> ${formatTime(sourceEndTime)}\\n`;\n  srtContent += `${sourceText}\\n\\n`;\n}\n\n// Return the final SRT content\nreturn { srt: srtContent, audioLength: lastSubtitleEndTime };"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -304,
+          16
+        ],
+        "id": "071663c9-f83a-4b4a-bd3d-1e384c51cbf3",
+        "name": "Create .srt"
+      },
+      {
+        "parameters": {
+          "operation": "toBinary",
+          "sourceProperty": "audio_base64",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.convertToFile",
+        "typeVersion": 1.1,
+        "position": [
+          -80,
+          -176
+        ],
+        "id": "30d8651a-39fb-4461-b1be-2a10783afc20",
+        "name": "Create mp3"
+      },
+      {
+        "parameters": {
+          "operation": "toText",
+          "sourceProperty": "srt",
+          "options": {
+            "fileName": "subtitles.srt"
+          }
+        },
+        "type": "n8n-nodes-base.convertToFile",
+        "typeVersion": 1.1,
+        "position": [
+          -80,
+          16
+        ],
+        "id": "d6f2deef-4072-489b-8d3c-aa1bd0d90c1e",
+        "name": "Convert to File1"
+      },
+      {
+        "parameters": {
+          "operation": "write",
+          "fileName": "voice.mp3",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.readWriteFile",
+        "typeVersion": 1,
+        "position": [
+          144,
+          -176
+        ],
+        "id": "b15d0bcf-b7e0-4061-bb08-4dce6ae12ef0",
+        "name": "Read/Write Files from Disk"
+      },
+      {
+        "parameters": {
+          "operation": "write",
+          "fileName": "subtitles.srt",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.readWriteFile",
+        "typeVersion": 1,
+        "position": [
+          144,
+          16
+        ],
+        "id": "0322b5c2-4fcf-45ce-863d-8d82f555dd61",
+        "name": "Read/Write Files from Disk2"
+      },
+      {
+        "parameters": {
+          "fileSelector": "final_video3.mp4",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.readWriteFile",
+        "typeVersion": 1,
+        "position": [
+          1472,
+          -176
+        ],
+        "id": "337fe038-60ec-4dc1-8da4-c879a465adc0",
+        "name": "Read/Write Files from Disk3",
+        "alwaysOutputData": false
+      },
+      {
+        "parameters": {
+          "resource": "video",
+          "operation": "upload",
+          "title": "={{ $('Get many rows').item.json.source }}",
+          "regionCode": "US",
+          "categoryId": "24",
+          "options": {
+            "description": "={{ $json.text }}",
+            "notifySubscribers": true,
+            "selfDeclaredMadeForKids": false
+          }
+        },
+        "type": "n8n-nodes-base.youTube",
+        "typeVersion": 1,
+        "position": [
+          720,
+          192
+        ],
+        "id": "48c3b838-21bc-4e90-a2b8-e4adacbd4185",
+        "name": "Upload a video",
+        "credentials": {
+          "youTubeOAuth2Api": {
+            "id": "snRLI3bRF0ut6JGX",
+            "name": "YouTube account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "=We created a video for this quote: \n\"{{ $json.quote }}\" from {{ $json.source }}.\nFormulate a description that explains the quote. Do not include a heading. Icons are allowed, but do not blabber, speak clear truth.",
+          "batching": {
+            "batchSize": 1
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.chainLlm",
+        "typeVersion": 1.7,
+        "position": [
+          -304,
+          192
+        ],
+        "id": "f1df8531-8dca-42bb-bfc3-9bdfdb8df810",
+        "name": "Generate description",
+        "alwaysOutputData": false,
+        "executeOnce": true
+      },
+      {
+        "parameters": {
+          "options": {}
+        },
+        "type": "n8n-nodes-base.splitInBatches",
+        "typeVersion": 3,
+        "position": [
+          -880,
+          -800
+        ],
+        "id": "4c50b7ac-f7ca-459b-938d-3098421771aa",
+        "name": "Loop Over Items"
+      },
+      {
+        "parameters": {
+          "tableId": "Quotes",
+          "fieldsUi": {
+            "fieldValues": [
+              {
+                "fieldId": "quote",
+                "fieldValue": "={{ $json.Text }}"
+              },
+              {
+                "fieldId": "source",
+                "fieldValue": "={{ $json.Source }}"
+              },
+              {
+                "fieldId": "type",
+                "fieldValue": "encouragement"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.supabase",
+        "typeVersion": 1,
+        "position": [
+          -656,
+          -752
+        ],
+        "id": "765fde53-07ca-497d-bde2-d1ebb0279de9",
+        "name": "Create a row",
+        "credentials": {
+          "supabaseApi": {
+            "id": "XYRiJdErOEBfWV3X",
+            "name": "Supabase account"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -656,
+          -944
+        ],
+        "id": "316633d4-e4bd-48c7-be1d-15dbde18e3ea",
+        "name": "Edit Fields2"
+      },
+      {
+        "parameters": {
+          "operation": "getAll",
+          "tableId": "Quotes",
+          "limit": 1,
+          "matchType": "allFilters",
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "published_at",
+                "condition": "is",
+                "keyValue": "null"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.supabase",
+        "typeVersion": 1,
+        "position": [
+          -880,
+          -112
+        ],
+        "id": "e85f6a0c-df2b-40fe-9219-61075db2ec46",
+        "name": "Get many rows",
+        "credentials": {
+          "supabaseApi": {
+            "id": "XYRiJdErOEBfWV3X",
+            "name": "Supabase account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "update",
+          "tableId": "Quotes",
+          "matchType": "allFilters",
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "id",
+                "condition": "eq",
+                "keyValue": "={{ $('Get many rows').item.json.id }}"
+              }
+            ]
+          },
+          "fieldsUi": {
+            "fieldValues": [
+              {
+                "fieldId": "published_at",
+                "fieldValue": "={{ $now }}"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.supabase",
+        "typeVersion": 1,
+        "position": [
+          1168,
+          192
+        ],
+        "id": "cc32b3f1-e893-452e-9c52-256863634a67",
+        "name": "Update a row",
+        "credentials": {
+          "supabaseApi": {
+            "id": "XYRiJdErOEBfWV3X",
+            "name": "Supabase account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "command": "rm final_video3.mp4"
+        },
+        "type": "n8n-nodes-base.executeCommand",
+        "typeVersion": 1,
+        "position": [
+          592,
+          -176
+        ],
+        "id": "2a348d13-0040-4e89-a772-28bd78a9c4c9",
+        "name": "revome previous video",
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "command": "ffmpeg -loop 1 -r 30 -i \"background.png\" -i \"voice_ext.mp3\" -vf \"scale=3840:-1,crop=iw/2:ih:'(t/10)*iw/4':'0',scale=1080:1920,subtitles=subtitles.srt:force_style='Alignment=2,Fontsize=18,PrimaryColour=&Hffffff&,MarginV=50'\" -c:v libx264 -preset ultrafast -c:a aac -pix_fmt yuv420p -t 59 -shortest \"final_video3.mp4\""
+        },
+        "type": "n8n-nodes-base.executeCommand",
+        "typeVersion": 1,
+        "position": [
+          1264,
+          -176
+        ],
+        "id": "975669c1-7d26-43fb-8d2f-1ab65f06020c",
+        "name": "Create video"
+      },
+      {
+        "parameters": {
+          "resource": "playlistItem",
+          "playlistId": "PLGtanszgXVkT8ZttWIR3eLS4c6-o_bYl6",
+          "videoId": "={{ $json.uploadId }}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.youTube",
+        "typeVersion": 1,
+        "position": [
+          944,
+          192
+        ],
+        "id": "54cc1f5a-6830-4bdc-b0ee-b09f752a0171",
+        "name": "Add a playlist item",
+        "credentials": {
+          "youTubeOAuth2Api": {
+            "id": "snRLI3bRF0ut6JGX",
+            "name": "YouTube account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "command": "ffmpeg -i voice.mp3 -f lavfi -i anullsrc=d=2 -filter_complex \"[0:a][1:a]concat=n=2:v=0:a=1\" voice_ext.mp3"
+        },
+        "type": "n8n-nodes-base.executeCommand",
+        "typeVersion": 1,
+        "position": [
+          1040,
+          -176
+        ],
+        "id": "e92cf908-4778-40e5-8e53-a358b402d72d",
+        "name": "Add 2s silence"
+      },
+      {
+        "parameters": {
+          "command": "rm voice_ext.mp3"
+        },
+        "type": "n8n-nodes-base.executeCommand",
+        "typeVersion": 1,
+        "position": [
+          816,
+          -176
+        ],
+        "id": "1d4658f3-d717-4cae-85aa-da189d8a2d41",
+        "name": "revome previous mp3",
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "mode": "combine",
+          "combineBy": "combineByPosition",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.merge",
+        "typeVersion": 3.2,
+        "position": [
+          496,
+          192
+        ],
+        "id": "589e019e-f91c-4462-af12-8b9e72ff3535",
+        "name": "Merge1"
+      },
+      {
+        "parameters": {
+          "rule": {
+            "interval": [
+              {
+                "field": "hours",
+                "hoursInterval": 8
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "typeVersion": 1.2,
+        "position": [
+          -1152,
+          -112
+        ],
+        "id": "90c43877-357d-4aa6-89a8-67f0abfc2491",
+        "name": "Schedule Trigger"
+      },
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.manualTrigger",
+        "typeVersion": 1,
+        "position": [
+          -1328,
+          -800
+        ],
+        "id": "885222e7-d1da-4b6a-81d7-d0004162e307",
+        "name": "When clicking ‘Execute workflow’"
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "z2xoE8Na4uklD4DD",
+            "mode": "list",
+            "cachedResultName": "Update Workflows on Git"
+          },
+          "workflowInputs": {
+            "mappingMode": "defineBelow",
+            "value": {},
+            "matchingColumns": [],
+            "schema": [],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": true
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.2,
+        "position": [
+          -96,
+          -832
+        ],
+        "id": "bca2e57e-d03c-45b5-abcb-a117ec963841",
+        "name": "Execute: Update Workflows on Git"
+      },
+      {
+        "parameters": {
+          "events": [
+            "update",
+            "activate"
+          ]
+        },
+        "type": "n8n-nodes-base.n8nTrigger",
+        "typeVersion": 1,
+        "position": [
+          -272,
+          -832
+        ],
+        "id": "53ae83ef-58ae-4240-b27e-b5ca50dfa62a",
+        "name": "Trigger on Activate or Active Workflow Updated"
+      },
+      {
+        "parameters": {
+          "content": "Save Workflow to Git:\n- when Activated\n- when saved while active.",
+          "height": 336,
+          "width": 496
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          -368,
+          -944
+        ],
+        "id": "d51553ef-33f0-4839-bff3-0c95cb2fe1e0",
+        "name": "Sticky Note"
+      }
+    ],
+    "connections": {
+      "HTTP Request": {
+        "main": [
+          [
+            {
+              "node": "Create .srt",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Create mp3",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "HTTP Request1": {
+        "main": [
+          [
+            {
+              "node": "Convert to File",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Basic LLM Chain": {
+        "main": [
+          [
+            {
+              "node": "HTTP Request1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OpenRouter Chat Model": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "Basic LLM Chain",
+              "type": "ai_languageModel",
+              "index": 0
+            },
+            {
+              "node": "Generate description",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Convert to File": {
+        "main": [
+          [
+            {
+              "node": "Read/Write Files from Disk1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Merge": {
+        "main": [
+          [
+            {
+              "node": "revome previous video",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Read/Write Files from Disk1": {
+        "main": [
+          [
+            {
+              "node": "Merge",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Create .srt": {
+        "main": [
+          [
+            {
+              "node": "Convert to File1",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Merge",
+              "type": "main",
+              "index": 3
+            }
+          ]
+        ]
+      },
+      "Create mp3": {
+        "main": [
+          [
+            {
+              "node": "Read/Write Files from Disk",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Convert to File1": {
+        "main": [
+          [
+            {
+              "node": "Read/Write Files from Disk2",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Read/Write Files from Disk": {
+        "main": [
+          [
+            {
+              "node": "Merge",
+              "type": "main",
+              "index": 1
+            }
+          ]
+        ]
+      },
+      "Read/Write Files from Disk2": {
+        "main": [
+          [
+            {
+              "node": "Merge",
+              "type": "main",
+              "index": 2
+            }
+          ]
+        ]
+      },
+      "Read/Write Files from Disk3": {
+        "main": [
+          [
+            {
+              "node": "Merge1",
+              "type": "main",
+              "index": 1
+            }
+          ]
+        ]
+      },
+      "Generate description": {
+        "main": [
+          [
+            {
+              "node": "Merge1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Loop Over Items": {
+        "main": [
+          [
+            {
+              "node": "Edit Fields2",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Create a row",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Create a row": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Upload a video": {
+        "main": [
+          [
+            {
+              "node": "Add a playlist item",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Get many rows": {
+        "main": [
+          [
+            {
+              "node": "Basic LLM Chain",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "HTTP Request",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Generate description",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "revome previous video": {
+        "main": [
+          [
+            {
+              "node": "revome previous mp3",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Create video": {
+        "main": [
+          [
+            {
+              "node": "Read/Write Files from Disk3",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Add a playlist item": {
+        "main": [
+          [
+            {
+              "node": "Update a row",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Add 2s silence": {
+        "main": [
+          [
+            {
+              "node": "Create video",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "revome previous mp3": {
+        "main": [
+          [
+            {
+              "node": "Add 2s silence",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Merge1": {
+        "main": [
+          [
+            {
+              "node": "Upload a video",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Schedule Trigger": {
+        "main": [
+          [
+            {
+              "node": "Get many rows",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "When clicking ‘Execute workflow’": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Trigger on Activate or Active Workflow Updated": {
+        "main": [
+          [
+            {
+              "node": "Execute: Update Workflows on Git",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1",
+      "timezone": "Europe/Amsterdam",
+      "callerPolicy": "workflowsFromSameOwner",
+      "errorWorkflow": "hwnEcKiEfPMr5Qml"
+    },
+    "staticData": {
+      "node:Schedule Trigger": {
+        "recurrenceRules": [
+          8
+        ]
+      }
+    },
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {},
+    "versionId": "e4d9d5ad-177a-44f9-a88b-777bfe42e3ca",
+    "triggerCount": 2,
+    "tags": [],
+    "shared": [
+      {
+        "createdAt": "2025-08-31T18:40:15.175Z",
+        "updatedAt": "2025-08-31T18:40:15.175Z",
+        "role": "workflow:owner",
+        "workflowId": "hoZQyZyX06wZi4IJ",
+        "projectId": "sKh7XMvKoqNv3AgS",
+        "project": {
+          "createdAt": "2025-08-13T12:38:41.348Z",
+          "updatedAt": "2025-08-13T13:46:53.556Z",
+          "id": "sKh7XMvKoqNv3AgS",
+          "name": "Jurriaan Koops <jurriaan@kaldejo.nl>",
+          "type": "personal",
+          "icon": null,
+          "description": null
+        }
+      }
+    ]
+  }
+}
