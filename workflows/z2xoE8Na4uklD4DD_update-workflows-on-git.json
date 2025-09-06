@@ -1,7 +1,7 @@
 {
   "0": {
     "createdAt": "2025-09-06T09:29:34.864Z",
-    "updatedAt": "2025-09-06T13:07:36.508Z",
+    "updatedAt": "2025-09-06T13:12:23.312Z",
     "id": "z2xoE8Na4uklD4DD",
     "name": "Update Workflows on Git",
     "active": true,
@@ -204,10 +204,6 @@
               {
                 "name": "repo.path",
                 "value": "workflows/"
-              },
-              {
-                "name": "workflow_id",
-                "value": "z2xoE8Na4uklD4DD"
               }
             ]
           },
@@ -665,7 +661,7 @@
       "templateCredsSetupCompleted": true
     },
     "pinData": {},
-    "versionId": "44172379-05c2-4109-9e74-bebde0216d8a",
+    "versionId": "e4158516-c76a-456d-ba62-02c8ad4ca2f8",
     "triggerCount": 1,
     "tags": [],
     "shared": [
