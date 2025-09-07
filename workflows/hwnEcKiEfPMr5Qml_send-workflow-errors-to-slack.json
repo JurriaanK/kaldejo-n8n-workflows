@@ -1,7 +1,7 @@
 {
   "0": {
     "createdAt": "2025-09-06T12:58:53.336Z",
-    "updatedAt": "2025-09-06T13:12:40.543Z",
+    "updatedAt": "2025-09-07T19:59:08.886Z",
     "id": "hwnEcKiEfPMr5Qml",
     "name": "Send WorkFlow errors to Slack",
     "active": true,
@@ -42,8 +42,8 @@
         "webhookId": "8ea8f958-e444-4399-a074-a774295a0a6e",
         "credentials": {
           "slackOAuth2Api": {
-            "id": "JneePlhp4wMB7mcO",
-            "name": "Slack account"
+            "id": "SXwZ4md2Vj0bttF5",
+            "name": "Slack account Kaldejo"
           }
         }
       },
@@ -138,7 +138,7 @@
       "templateCredsSetupCompleted": true
     },
     "pinData": {},
-    "versionId": "09a2beda-2710-47b9-b956-3e234801bfc3",
+    "versionId": "a7d077ea-2235-4a35-92c1-a08c07ef3ba3",
     "triggerCount": 1,
     "tags": [],
     "shared": [
