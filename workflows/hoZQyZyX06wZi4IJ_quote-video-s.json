@@ -1,7 +1,7 @@
 {
   "0": {
     "createdAt": "2025-08-31T18:40:15.175Z",
-    "updatedAt": "2025-09-07T18:40:22.424Z",
+    "updatedAt": "2025-09-07T18:51:18.537Z",
     "id": "hoZQyZyX06wZi4IJ",
     "name": "Quote video's",
     "active": true,
@@ -909,7 +909,7 @@
         "main": [
           [
             {
-              "node": "Loop Over Items",
+              "node": "Get many rows",
               "type": "main",
               "index": 0
             }
@@ -945,7 +945,7 @@
       "templateCredsSetupCompleted": true
     },
     "pinData": {},
-    "versionId": "961b2633-9e09-49de-8576-065210e7ea65",
+    "versionId": "c4ab8953-9275-4023-a95b-049e188dd55d",
     "triggerCount": 2,
     "tags": [],
     "shared": [
