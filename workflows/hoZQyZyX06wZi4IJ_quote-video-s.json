@@ -1,7 +1,7 @@
 {
   "0": {
     "createdAt": "2025-08-31T18:40:15.175Z",
-    "updatedAt": "2025-09-06T13:31:14.376Z",
+    "updatedAt": "2025-09-07T18:40:22.424Z",
     "id": "hoZQyZyX06wZi4IJ",
     "name": "Quote video's",
     "active": true,
@@ -87,7 +87,7 @@
       {
         "parameters": {
           "promptType": "define",
-          "text": "=Write a prompt to create a symbolic and artistic image that visually communicates the message and emotional tone of this Bible verse from {{ $json.source }}: \"{{ $json.quote }}\". \nDo not include any text in the image. \nFocus on atmosphere, symbolism, and composition that reflect the spiritual meaning and feeling of the verse.\nKeep the structure of the prompt simple and add style guidance. Make it relatable for humans.",
+          "text": "=Your goal is to generate a detailed prompt for an AI image generator. This prompt will create a symbolic, artistic, and text-free image that visually communicates the core message and emotional journey of a specific Bible verse.\n\nVerse for Interpretation:\nSource: {{ $json.source }}\nQuote: \"{{ $json.quote }}\"\n\nInstructions for Generating the Image Prompt:\n\n1. Analyze the Verse: First, break down the verse into its core components.\n- What is the central action, promise, or declaration?\n- What are the key objects, concepts, or emotions (e.g., light, darkness, fear, peace, strength, weakness, journey, refuge)?\n- Identify any contrasts or paradoxes present (e.g., strength in weakness, light from darkness, life from death).\n\n2. Translate to Symbolism: Brainstorm a primary visual metaphor that captures the analysis from step 1.\n- How can you represent the abstract concepts visually and in a way that feels universally human and relatable?\n- Consider both natural elements (landscapes, plants, animals, weather) and human-made objects (paths, structures, vessels).\n\n3. Construct the Image Prompt: Based on your analysis, write a single, cohesive prompt for the AI image generator. Your generated prompt must include:\n- A Clear Subject & Scene: Describe the central focus and its environment.\n- Dynamic Atmosphere & Mood: Define the emotional tone using descriptive words for lighting, color, and texture (e.g., \"serene,\" \"turbulent but hopeful,\" \"somber yet peaceful\").\n- Symbolic Interaction: Clearly describe how the symbolic elements interact to tell the story of the verse. For example, instead of just \"light and darkness,\" describe \"soft light piercing through a dense fog.\"\n- Compositional Focus: Guide the composition to draw the viewer's eye to the most important part of the story. The image will be used to create a video, moving slowy from the left to the right part of the image.\n- Artistic Style: Suggest a suitable style (e.g., \"painterly and ethereal,\" \"symbolic realism,\" \"minimalist with high contrast\").\n",
           "batching": {}
         },
         "type": "@n8n/n8n-nodes-langchain.chainLlm",
@@ -937,7 +937,7 @@
     "staticData": {
       "node:Schedule Trigger": {
         "recurrenceRules": [
-          8
+          16
         ]
       }
     },
@@ -945,7 +945,7 @@
       "templateCredsSetupCompleted": true
     },
     "pinData": {},
-    "versionId": "e4d9d5ad-177a-44f9-a88b-777bfe42e3ca",
+    "versionId": "961b2633-9e09-49de-8576-065210e7ea65",
     "triggerCount": 2,
     "tags": [],
     "shared": [
