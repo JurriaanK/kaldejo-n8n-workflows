@@ -1,7 +1,7 @@
 {
   "0": {
     "createdAt": "2025-09-06T09:29:34.864Z",
-    "updatedAt": "2025-09-06T13:12:23.312Z",
+    "updatedAt": "2025-09-07T19:31:56.589Z",
     "id": "z2xoE8Na4uklD4DD",
     "name": "Update Workflows on Git",
     "active": true,
@@ -20,7 +20,7 @@
         "name": "GitHub",
         "type": "n8n-nodes-base.github",
         "position": [
-          1568,
+          1776,
           -336
         ],
         "typeVersion": 1,
@@ -40,7 +40,7 @@
         "name": "Merge",
         "type": "n8n-nodes-base.merge",
         "position": [
-          1872,
+          2080,
           -272
         ],
         "typeVersion": 1,
@@ -69,7 +69,7 @@
         "name": "github_status",
         "type": "n8n-nodes-base.switch",
         "position": [
-          2176,
+          2384,
           -272
         ],
         "typeVersion": 1,
@@ -80,7 +80,7 @@
         "name": "same",
         "type": "n8n-nodes-base.noOp",
         "position": [
-          2384,
+          2592,
           -400
         ],
         "typeVersion": 1,
@@ -91,7 +91,7 @@
         "name": "different",
         "type": "n8n-nodes-base.noOp",
         "position": [
-          2384,
+          2592,
           32
         ],
         "typeVersion": 1,
@@ -102,7 +102,7 @@
         "name": "new",
         "type": "n8n-nodes-base.noOp",
         "position": [
-          2384,
+          2592,
           -240
         ],
         "typeVersion": 1,
@@ -129,7 +129,7 @@
         "name": "GitHub Edit",
         "type": "n8n-nodes-base.github",
         "position": [
-          2864,
+          3504,
           32
         ],
         "typeVersion": 1,
@@ -162,7 +162,7 @@
         "name": "GitHub Create",
         "type": "n8n-nodes-base.github",
         "position": [
-          2592,
+          2800,
           -240
         ],
         "typeVersion": 1,
@@ -225,7 +225,7 @@
         "name": "isDiffOrNew1",
         "type": "n8n-nodes-base.function",
         "position": [
-          2032,
+          2240,
           -272
         ],
         "typeVersion": 1,
@@ -252,7 +252,7 @@
         "type": "n8n-nodes-base.readWriteFile",
         "typeVersion": 1,
         "position": [
-          832,
+          1040,
           -256
         ],
         "id": "a1908170-e02d-4e76-bb95-740aee241b66",
@@ -265,7 +265,7 @@
         "type": "n8n-nodes-base.executeCommand",
         "typeVersion": 1,
         "position": [
-          640,
+          848,
           -256
         ],
         "id": "c4a572c7-6a1b-4986-a33b-045b77e5309e",
@@ -279,7 +279,7 @@
         "type": "n8n-nodes-base.extractFromFile",
         "typeVersion": 1,
         "position": [
-          1024,
+          1232,
           -256
         ],
         "id": "ad25aff0-5a6f-4e15-83e6-8b3184531cde",
@@ -314,7 +314,7 @@
         "type": "n8n-nodes-base.set",
         "typeVersion": 3.4,
         "position": [
-          1280,
+          1488,
           -336
         ],
         "id": "f1e6894b-16eb-455b-8511-d6217df500e3",
@@ -327,7 +327,7 @@
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
         "position": [
-          1280,
+          1488,
           -144
         ],
         "id": "bdbb3a64-207b-49de-b47b-90c79c08b61d",
@@ -394,13 +394,13 @@
       {
         "parameters": {
           "promptType": "define",
-          "text": "=<instruction>\nCompare the old version of this n8n workflow with the new one.\nOutput a compact commit message which summarizes the functional changes. Make a list if needed. Be concise, leave out non functional details.\n</instruction>\n\n<old_workflow>\n{{ $json.content_decoded.toJsonString() }}\n</old_workflow>\n\n<new_workflow>\n{{ $json.n8n_data_stringy }}\n</new_workflow>",
+          "text": "=<instruction>\nCompare the old version of this n8n workflow with the new one. I already included an indication where the differences are.\nOutput a compact commit message, without introduction which summarizes the functional changes. Make a list if needed. Be concise, leave out non functional details.\nDo not start with 'Commit:', just output the message.\n</instruction>\n\n<difference_indication>\n{{ $json.diff }}\n</difference_indication>\n\n<old_workflow>\n{{ $json.content_decoded.toJsonString() }}\n</old_workflow>\n\n<new_workflow>\n{{ $json.n8n_data_stringy }}\n</new_workflow>",
           "batching": {}
         },
         "type": "@n8n/n8n-nodes-langchain.chainLlm",
         "typeVersion": 1.7,
         "position": [
-          2544,
+          3184,
           32
         ],
         "id": "e3d93e80-541c-4f6d-9b8b-bc336ffd5401",
@@ -414,7 +414,7 @@
         "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
         "typeVersion": 1,
         "position": [
-          2544,
+          3184,
           192
         ],
         "id": "a4780c20-ddad-423d-b840-ee1672dfb446",
@@ -425,6 +425,19 @@
             "name": "OpenRouter account"
           }
         }
+      },
+      {
+        "parameters": {
+          "jsCode": "/**\n * n8n Code Node to Compare Two Workflow JSONs and Generate a Detailed Diff\n * This script reports the exact JSON path and the changed values.\n */\n\n// --- Input Data from n8n ---\nconst oldData = $input.first().json.content_decoded;\nconst newDataRaw = $input.first().json.n8n_data_stringy;\nconst newData = typeof newDataRaw === 'string' ? JSON.parse(newDataRaw) : newDataRaw;\n\n// --- Helper Functions ---\n\n/**\n * Recursively compares two values and returns a list of differences with full property paths and changed values.\n * @param {*} val1 - The first value.\n * @param {*} val2 - The second value.\n * @param {string} path - The current property path (e.g., \"parameters.options\").\n * @returns {string[]} An array of strings describing the differences.\n */\nfunction deepCompare(val1, val2, path) {\n    const differences = [];\n    const IGNORED_KEYS = new Set(['position', 'id', 'webhookId', 'createdAt', 'updatedAt', 'versionId', 'pinData', '__rl', 'cachedResultName']);\n\n    // Base Case: If types are different or they are not objects/arrays\n    if (typeof val1 !== typeof val2 || typeof val1 !== 'object' || val1 === null || val2 === null) {\n        if (JSON.stringify(val1) !== JSON.stringify(val2)) {\n            const strVal1 = (JSON.stringify(val1) || 'undefined').substring(0, 75);\n            const strVal2 = (JSON.stringify(val2) || 'undefined').substring(0, 75);\n            differences.push(`Property '${path}' changed from ${strVal1} to ${strVal2}`);\n        }\n        return differences;\n    }\n\n    // Handle Arrays\n    if (Array.isArray(val1)) {\n        if (!Array.isArray(val2)) {\n            differences.push(`Property '${path}' changed from an Array to something else.`);\n            return differences;\n        }\n        if (val1.length !== val2.length) {\n            differences.push(`Array '${path}' length changed from ${val1.length} to ${val2.length}.`);\n        }\n        const len = Math.min(val1.length, val2.length);\n        for (let i = 0; i < len; i++) {\n            differences.push(...deepCompare(val1[i], val2[i], `${path}[${i}]`));\n        }\n        return differences;\n    }\n\n    // Handle Objects\n    const allKeys = new Set([...Object.keys(val1), ...Object.keys(val2)]);\n    for (const key of allKeys) {\n        if (IGNORED_KEYS.has(key)) continue;\n\n        const currentPath = path ? `${path}.${key}` : key;\n        const v1 = val1[key];\n        const v2 = val2[key];\n\n        if (v1 === undefined) {\n            differences.push(`Added property '${currentPath}'.`);\n        } else if (v2 === undefined) {\n            differences.push(`Removed property '${currentPath}'.`);\n        } else {\n            differences.push(...deepCompare(v1, v2, currentPath));\n        }\n    }\n    return differences;\n}\n\n\n/**\n * Flattens the connections object into a set of readable strings for comparison.\n */\nfunction getFlatConnections(connectionsObj) {\n    const flatConnections = new Set();\n    if (!connectionsObj) return flatConnections;\n    for (const sourceNodeName in connectionsObj) {\n        if (!connectionsObj[sourceNodeName]) continue;\n        for (const outputName in connectionsObj[sourceNodeName]) {\n            const targets = connectionsObj[sourceNodeName][outputName];\n            if (!targets) continue;\n            for (const targetArr of targets) {\n                if (!targetArr) continue;\n                for (const target of targetArr) {\n                    if (target && target.node && target.type) {\n                        flatConnections.add(`\"${sourceNodeName}\" (${outputName}) -> \"${target.node}\" (${target.type})`);\n                    }\n                }\n            }\n        }\n    }\n    return flatConnections;\n}\n\n// --- Main Diff Generation Logic ---\nfunction generateDiff(oldWf, newWf) {\n    const diffReport = [];\n\n    // 1. Compare Workflow Metadata\n    if (oldWf.name !== newWf.name) {\n        diffReport.push(`- Workflow renamed from \"${oldWf.name}\" to \"${newWf.name}\".`);\n    }\n    \n    // 2. Compare Nodes\n    const oldNodesMap = (oldWf.nodes || []).reduce((acc, node) => ({ ...acc, [node.id]: node }), {});\n    const newNodesMap = (newWf.nodes || []).reduce((acc, node) => ({ ...acc, [node.id]: node }), {});\n    const allNodeIds = new Set([...Object.keys(oldNodesMap), ...Object.keys(newNodesMap)]);\n\n    for (const id of allNodeIds) {\n        const oldNode = oldNodesMap[id];\n        const newNode = newNodesMap[id];\n\n        if (!oldNode) {\n            diffReport.push(`- Node Added: \"${newNode.name}\" (Type: ${newNode.type}).`);\n        } else if (!newNode) {\n            diffReport.push(`- Node Removed: \"${oldNode.name}\" (Type: ${oldNode.type}).`);\n        } else {\n            const nodeChanges = [];\n            if (oldNode.name !== newNode.name) {\n                nodeChanges.push(`  - Renamed from \"${oldNode.name}\" to \"${newNode.name}\".`);\n            }\n            \n            const paramChanges = deepCompare(oldNode.parameters, newNode.parameters, 'parameters');\n            paramChanges.forEach(change => nodeChanges.push(`  - ${change}`));\n\n            if (nodeChanges.length > 0) {\n                diffReport.push(`- Node Modified: \"${oldNode.name}\":\\n${nodeChanges.join('\\n')}`);\n            }\n        }\n    }\n\n    // 3. Compare Connections\n    const oldConnections = getFlatConnections(oldWf.connections);\n    const newConnections = getFlatConnections(newWf.connections);\n\n    const addedConnections = [...newConnections].filter(c => !oldConnections.has(c));\n    const removedConnections = [...oldConnections].filter(c => !newConnections.has(c));\n\n    if (addedConnections.length > 0) {\n        diffReport.push(\"- Connections Added:\");\n        addedConnections.forEach(c => diffReport.push(`  - ${c}`));\n    }\n    if (removedConnections.length > 0) {\n        diffReport.push(\"- Connections Removed:\");\n        removedConnections.forEach(c => diffReport.push(`  - ${c}`));\n    }\n\n    if (diffReport.length === 0) {\n        return 'No functional changes detected.';\n    }\n\n    return `Summary of workflow changes:\\n${diffReport.join('\\n')}`;\n}\n\n\n// --- Execute and Return ---\n// The actual workflow data is nested under the \"0\" key.\nconst diffText = generateDiff(oldData['0'], newData['0']);\n\nreturn [{\n    json: {\n        ...$input.first().json, // Pass through existing data\n        diff: diffText,\n    }\n}];"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          2800,
+          32
+        ],
+        "id": "a7828f31-4d92-4675-87c9-298371c7cbb6",
+        "name": "Code"
       }
     ],
     "connections": {
@@ -481,7 +494,7 @@
         "main": [
           [
             {
-              "node": "Basic LLM Chain",
+              "node": "Code",
               "type": "main",
               "index": 0
             }
@@ -648,6 +661,17 @@
             }
           ]
         ]
+      },
+      "Code": {
+        "main": [
+          [
+            {
+              "node": "Basic LLM Chain",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
       }
     },
     "settings": {
@@ -661,7 +685,7 @@
       "templateCredsSetupCompleted": true
     },
     "pinData": {},
-    "versionId": "e4158516-c76a-456d-ba62-02c8ad4ca2f8",
+    "versionId": "efdc42ff-492d-4c19-9bd0-9f2f456afabc",
     "triggerCount": 1,
     "tags": [],
     "shared": [
