@@ -1,7 +1,7 @@
 {
   "0": {
     "createdAt": "2025-08-13T15:36:26.300Z",
-    "updatedAt": "2025-09-14T18:19:11.538Z",
+    "updatedAt": "2025-09-14T18:20:29.495Z",
     "id": "N0uW8xSUhcWlaT0A",
     "name": "Auto Gmail Labeling",
     "active": true,
@@ -998,7 +998,10 @@
       }
     },
     "settings": {
-      "executionOrder": "v1"
+      "executionOrder": "v1",
+      "timezone": "Europe/Amsterdam",
+      "callerPolicy": "workflowsFromSameOwner",
+      "errorWorkflow": "hwnEcKiEfPMr5Qml"
     },
     "staticData": {
       "node:Schedule Trigger": {
@@ -1006,10 +1009,10 @@
       },
       "node:Gmail Trigger": {
         "Gmail Trigger": {
-          "lastTimeChecked": 1756046724,
+          "lastTimeChecked": 1757854620,
           "possibleDuplicates": [
-            "198dc8a8fcd5277d",
-            "198dc78f78103e8d"
+            "199484d307059ccf",
+            "199484ce16e85dd1"
           ]
         }
       }
@@ -1018,8 +1021,8 @@
       "templateCredsSetupCompleted": true
     },
     "pinData": {},
-    "versionId": "d982bb5f-86e5-4b3b-818f-365779a95ec2",
-    "triggerCount": 1,
+    "versionId": "a6a7db0d-c053-4c3a-bcbc-bfe2f8e2f1aa",
+    "triggerCount": 2,
     "tags": [],
     "shared": [
       {
