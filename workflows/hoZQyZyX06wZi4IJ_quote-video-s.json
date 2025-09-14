@@ -1,7 +1,7 @@
 {
   "0": {
     "createdAt": "2025-08-31T18:40:15.175Z",
-    "updatedAt": "2025-09-07T18:51:18.537Z",
+    "updatedAt": "2025-09-14T13:27:05.715Z",
     "id": "hoZQyZyX06wZi4IJ",
     "name": "Quote video's",
     "active": true,
@@ -83,21 +83,6 @@
         "id": "637dab5a-0544-499c-b2b7-740f4e49be25",
         "name": "Convert to File",
         "alwaysOutputData": true
-      },
-      {
-        "parameters": {
-          "promptType": "define",
-          "text": "=Your goal is to generate a detailed prompt for an AI image generator. This prompt will create a symbolic, artistic, and text-free image that visually communicates the core message and emotional journey of a specific Bible verse.\n\nVerse for Interpretation:\nSource: {{ $json.source }}\nQuote: \"{{ $json.quote }}\"\n\nInstructions for Generating the Image Prompt:\n\n1. Analyze the Verse: First, break down the verse into its core components.\n- What is the central action, promise, or declaration?\n- What are the key objects, concepts, or emotions (e.g., light, darkness, fear, peace, strength, weakness, journey, refuge)?\n- Identify any contrasts or paradoxes present (e.g., strength in weakness, light from darkness, life from death).\n\n2. Translate to Symbolism: Brainstorm a primary visual metaphor that captures the analysis from step 1.\n- How can you represent the abstract concepts visually and in a way that feels universally human and relatable?\n- Consider both natural elements (landscapes, plants, animals, weather) and human-made objects (paths, structures, vessels).\n\n3. Construct the Image Prompt: Based on your analysis, write a single, cohesive prompt for the AI image generator. Your generated prompt must include:\n- A Clear Subject & Scene: Describe the central focus and its environment.\n- Dynamic Atmosphere & Mood: Define the emotional tone using descriptive words for lighting, color, and texture (e.g., \"serene,\" \"turbulent but hopeful,\" \"somber yet peaceful\").\n- Symbolic Interaction: Clearly describe how the symbolic elements interact to tell the story of the verse. For example, instead of just \"light and darkness,\" describe \"soft light piercing through a dense fog.\"\n- Compositional Focus: Guide the composition to draw the viewer's eye to the most important part of the story. The image will be used to create a video, moving slowy from the left to the right part of the image.\n- Artistic Style: Suggest a suitable style (e.g., \"painterly and ethereal,\" \"symbolic realism,\" \"minimalist with high contrast\").\n",
-          "batching": {}
-        },
-        "type": "@n8n/n8n-nodes-langchain.chainLlm",
-        "typeVersion": 1.7,
-        "position": [
-          -608,
-          -432
-        ],
-        "id": "ae6d9050-b4ca-49b6-8bf5-6aeff0d5813e",
-        "name": "Basic LLM Chain"
       },
       {
         "parameters": {
@@ -595,6 +580,21 @@
         ],
         "id": "d51553ef-33f0-4839-bff3-0c95cb2fe1e0",
         "name": "Sticky Note"
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "=<role>\nYou are an expert in theological symbolism and visual storytelling. Your purpose is to translate the profound, abstract concepts within a Bible verse into a single, powerful, and universally understandable visual prompt for an AI image generator.\n</role>\n\n<task>\nYour goal is to generate a single, detailed, and evocative prompt for an AI image generator. This prompt must create a symbolic, artistic, and entirely text-free image that visually communicates the core message and emotional journey of the provided Bible verse.\n\n**Verse for Interpretation:**\n- **Source:** {{ $json.source }}\n- **Quote:** \"{{ $json.quote }}\"\n\n</task>\n\n<process>\nFollow this three-step process to create the final image prompt:\n\n1.  **Verse Deconstruction:**\n\n- **Central Message:** Identify the verse's primary action, promise, or declaration. What is the fundamental truth being conveyed?\n- **Key Concepts & Emotions:** List the core abstract ideas (e.g., strength, weakness, hope, fear, peace, journey, refuge, transformation) and the dominant emotional tone.\n- **Core Contrast:** Pinpoint the central tension or paradox (e.g., light emerging from darkness, strength found in vulnerability, life arising from decay, guidance in confusion). This will be the main driver of the visual narrative.\n\n2.  **Metaphorical Translation:**\n\n- **Develop a Central Metaphor:** Based on your analysis, devise a powerful visual metaphor that can carry the verse's meaning without words.\n- **Select Symbolic Elements:** Choose universally relatable elements to build your scene. Consider natural elements (plants, weather, light, landscapes, animals) or archetypal objects (paths, shelters, vessels, tools). The goal is subtlety and universal appeal.\n\n3.  **Prompt Synthesis:**\n\nCombine your analysis and metaphors into a single, cohesive prompt for an AI image generator. The prompt must integrate the following five components seamlessly:\n  - **Subject & Scene:** Clearly define the main focus of the image and the environment it inhabits. What are we looking at?\n  - **Atmosphere & Mood:** Use descriptive language for lighting, color palette, and texture to establish a specific emotional tone (e.g., \"somber yet hopeful,\" \"serene tranquility,\" \"turbulent but resolving\").\n  - **Symbolic Interaction:** Describe how the elements in the scene interact to tell the story of the verse. Instead of just listing symbols, describe their action (e.g., \"A fragile, luminous sapling pushes through cracked, barren rock,\" not just \"tree and rock\").\n  - **Compositional Flow:** Structure the scene to be read visually from left to right, creating a narrative path for a slow video pan. The left side might introduce the problem or struggle, the center can depict the transformation, and the right side can reveal the resulting peace or promise.\n  - **Artistic Style:** Specify an appropriate artistic style that enhances the mood and message (e.g., \"ethereal painterly style,\" \"symbolic realism with high dynamic range,\" \"minimalist with stark contrasts,\" \"Japanese sumi-e influence\").\n\n</process>\n\n<constraints>\n\n  * **Symbolism over Literalism:** The prompt must avoid any literal depiction of religious figures, specific cultural iconography (e.g., crosses, halos), or overt religious symbols. The meaning must be conveyed through universal, archetypal imagery.\n  * **No Anatomical Organs:** When representing concepts like \"heart\" or \"soul,\" use symbolic objects (e.g., a heart symbol, a glowing lantern, a sheltered flame, a core of light) instead of literal human organs.\n  * **Strictly Text-Free:** The generated image must contain no letters, words, or text of any kind.\n  * **Single Paragraph Output:** Your final output must be only the generated prompt, ready to use. Do not include your analysis or any explanatory text in the final response.\n</constraints>",
+          "batching": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.chainLlm",
+        "typeVersion": 1.7,
+        "position": [
+          -608,
+          -432
+        ],
+        "id": "ae6d9050-b4ca-49b6-8bf5-6aeff0d5813e",
+        "name": "Generate image prompt"
       }
     ],
     "connections": {
@@ -625,22 +625,11 @@
           ]
         ]
       },
-      "Basic LLM Chain": {
-        "main": [
-          [
-            {
-              "node": "HTTP Request1",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
-      },
       "OpenRouter Chat Model": {
         "ai_languageModel": [
           [
             {
-              "node": "Basic LLM Chain",
+              "node": "Generate image prompt",
               "type": "ai_languageModel",
               "index": 0
             },
@@ -811,7 +800,7 @@
         "main": [
           [
             {
-              "node": "Basic LLM Chain",
+              "node": "Generate image prompt",
               "type": "main",
               "index": 0
             },
@@ -926,6 +915,17 @@
             }
           ]
         ]
+      },
+      "Generate image prompt": {
+        "main": [
+          [
+            {
+              "node": "HTTP Request1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
       }
     },
     "settings": {
@@ -937,7 +937,7 @@
     "staticData": {
       "node:Schedule Trigger": {
         "recurrenceRules": [
-          16
+          8
         ]
       }
     },
@@ -945,7 +945,7 @@
       "templateCredsSetupCompleted": true
     },
     "pinData": {},
-    "versionId": "c4ab8953-9275-4023-a95b-049e188dd55d",
+    "versionId": "fdfc1949-ab81-4a1e-a4eb-973e02aacb6c",
     "triggerCount": 2,
     "tags": [],
     "shared": [
