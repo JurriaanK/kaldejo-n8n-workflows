@@ -1,7 +1,7 @@
 {
   "0": {
     "createdAt": "2025-08-13T15:36:26.300Z",
-    "updatedAt": "2025-09-16T20:37:36.537Z",
+    "updatedAt": "2025-09-16T20:38:09.061Z",
     "id": "N0uW8xSUhcWlaT0A",
     "name": "Auto Gmail Labeling",
     "active": true,
@@ -1014,7 +1014,7 @@
       "templateCredsSetupCompleted": true
     },
     "pinData": {},
-    "versionId": "4b945357-9040-42c9-87bf-33d5156dda77",
+    "versionId": "37d31e70-a4fd-472e-a837-35f6f919aa8b",
     "triggerCount": 2,
     "tags": [],
     "shared": [
