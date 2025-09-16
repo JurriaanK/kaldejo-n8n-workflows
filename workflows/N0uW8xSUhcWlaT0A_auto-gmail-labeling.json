@@ -1,7 +1,7 @@
 {
   "0": {
     "createdAt": "2025-08-13T15:36:26.300Z",
-    "updatedAt": "2025-09-14T18:20:29.495Z",
+    "updatedAt": "2025-09-16T20:31:55.035Z",
     "id": "N0uW8xSUhcWlaT0A",
     "name": "Auto Gmail Labeling",
     "active": true,
@@ -327,7 +327,7 @@
       },
       {
         "parameters": {
-          "jsCode": "return items.filter(item => {\n  const labels = item.json.labelIds || [];\n  // Exclude if ANY label starts with \"Label_\"\n  return !labels.some(label => label.startsWith(\"Label_\"));\n});"
+          "jsCode": "return $input.all().filter(item => {\n  const labels = item.json.labelIds || [];\n  // Exclude if ANY label starts with \"Label_\"\n  return !labels.some(label => label.startsWith(\"Label_\"));\n});"
         },
         "id": "7d4fd936-a9e1-4f47-8171-11d72f02ab67",
         "name": "Filter Emails Without Excluded Labels",
@@ -837,13 +837,7 @@
       },
       "Gmail - Get All Messages": {
         "main": [
-          [
-            {
-              "node": "Filter Emails Without Excluded Labels",
-              "type": "main",
-              "index": 0
-            }
-          ]
+          []
         ]
       },
       "Filter Emails Without Excluded Labels": {
@@ -1009,10 +1003,9 @@
       },
       "node:Gmail Trigger": {
         "Gmail Trigger": {
-          "lastTimeChecked": 1757854620,
+          "lastTimeChecked": 1758053231,
           "possibleDuplicates": [
-            "199484d307059ccf",
-            "199484ce16e85dd1"
+            "19954236c047ee5d"
           ]
         }
       }
@@ -1021,7 +1014,7 @@
       "templateCredsSetupCompleted": true
     },
     "pinData": {},
-    "versionId": "a6a7db0d-c053-4c3a-bcbc-bfe2f8e2f1aa",
+    "versionId": "1353983e-6d11-4692-b1ef-cba7fc8db88f",
     "triggerCount": 2,
     "tags": [],
     "shared": [
