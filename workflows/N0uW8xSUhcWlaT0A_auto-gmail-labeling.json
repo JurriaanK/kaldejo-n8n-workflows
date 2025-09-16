@@ -1,7 +1,7 @@
 {
   "0": {
     "createdAt": "2025-08-13T15:36:26.300Z",
-    "updatedAt": "2025-09-16T20:31:55.035Z",
+    "updatedAt": "2025-09-16T20:35:24.936Z",
     "id": "N0uW8xSUhcWlaT0A",
     "name": "Auto Gmail Labeling",
     "active": true,
@@ -327,7 +327,7 @@
       },
       {
         "parameters": {
-          "jsCode": "return $input.all().filter(item => {\n  const labels = item.json.labelIds || [];\n  // Exclude if ANY label starts with \"Label_\"\n  return !labels.some(label => label.startsWith(\"Label_\"));\n});"
+          "jsCode": "return $input.all().filter(item => {\n  const labels = item.json.labels || [];\n  // Exclude if ANY label id starts with \"Label_\"\n  return !labels.some(label => label.id.startsWith(\"Label_\"));\n});\n"
         },
         "id": "7d4fd936-a9e1-4f47-8171-11d72f02ab67",
         "name": "Filter Emails Without Excluded Labels",
@@ -1014,7 +1014,7 @@
       "templateCredsSetupCompleted": true
     },
     "pinData": {},
-    "versionId": "1353983e-6d11-4692-b1ef-cba7fc8db88f",
+    "versionId": "4b945357-9040-42c9-87bf-33d5156dda77",
     "triggerCount": 2,
     "tags": [],
     "shared": [
