@@ -1,7 +1,7 @@
 {
   "0": {
     "createdAt": "2025-09-06T12:58:53.336Z",
-    "updatedAt": "2025-09-07T19:59:08.886Z",
+    "updatedAt": "2025-09-21T14:21:51.057Z",
     "id": "hwnEcKiEfPMr5Qml",
     "name": "Send WorkFlow errors to Slack",
     "active": true,
@@ -17,35 +17,6 @@
         ],
         "id": "a45eb80e-8327-4a01-8e97-998cc36b9937",
         "name": "Error Trigger"
-      },
-      {
-        "parameters": {
-          "authentication": "oAuth2",
-          "select": "channel",
-          "channelId": {
-            "__rl": true,
-            "value": "C09DTH53QDT",
-            "mode": "list",
-            "cachedResultName": "kaldejo-n8n-errors"
-          },
-          "text": "=This workflow {{$json[\"workflow\"][\"name\"]}} failed. Error message: {{$json[\"execution\"][\"error\"][\"message\"]}} Last node executed: {{$json[\"execution\"][\"lastNodeExecuted\"]}} View execution: {{$json[\"execution\"][\"url\"]}}",
-          "otherOptions": {}
-        },
-        "type": "n8n-nodes-base.slack",
-        "typeVersion": 2.3,
-        "position": [
-          208,
-          0
-        ],
-        "id": "347d7c80-9911-492c-a175-5bcb684d68d2",
-        "name": "Send a message",
-        "webhookId": "8ea8f958-e444-4399-a074-a774295a0a6e",
-        "credentials": {
-          "slackOAuth2Api": {
-            "id": "SXwZ4md2Vj0bttF5",
-            "name": "Slack account Kaldejo"
-          }
-        }
       },
       {
         "parameters": {
@@ -104,6 +75,28 @@
         ],
         "id": "18bca966-a649-4918-9ea2-6f9740a328b6",
         "name": "Sticky Note"
+      },
+      {
+        "parameters": {
+          "chatId": "690550078",
+          "text": "=This workflow {{$json[\"workflow\"][\"name\"]}} failed. Error message: {{$json[\"execution\"][\"error\"][\"message\"]}} Last node executed: {{$json[\"execution\"][\"lastNodeExecuted\"]}} View execution: {{$json[\"execution\"][\"url\"]}}",
+          "additionalFields": {}
+        },
+        "type": "n8n-nodes-base.telegram",
+        "typeVersion": 1.2,
+        "position": [
+          256,
+          0
+        ],
+        "id": "3432b9e1-7725-4dfc-b849-d26c93d58705",
+        "name": "Send a text message",
+        "webhookId": "a3f73564-c74b-4bec-95e4-5abcd5996549",
+        "credentials": {
+          "telegramApi": {
+            "id": "CP9P9JO5UYpAm5XV",
+            "name": "Telegram account"
+          }
+        }
       }
     ],
     "connections": {
@@ -111,7 +104,7 @@
         "main": [
           [
             {
-              "node": "Send a message",
+              "node": "Send a text message",
               "type": "main",
               "index": 0
             }
@@ -138,7 +131,7 @@
       "templateCredsSetupCompleted": true
     },
     "pinData": {},
-    "versionId": "a7d077ea-2235-4a35-92c1-a08c07ef3ba3",
+    "versionId": "27d3a0b4-b8a9-4091-89e7-82d586c09ada",
     "triggerCount": 1,
     "tags": [],
     "shared": [
