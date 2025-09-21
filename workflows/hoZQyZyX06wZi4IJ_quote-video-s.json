@@ -1,7 +1,7 @@
 {
   "0": {
     "createdAt": "2025-08-31T18:40:15.175Z",
-    "updatedAt": "2025-09-21T14:01:11.517Z",
+    "updatedAt": "2025-09-21T20:46:00.201Z",
     "id": "hoZQyZyX06wZi4IJ",
     "name": "Quote video's",
     "active": true,
@@ -205,7 +205,7 @@
           "regionCode": "US",
           "categoryId": "24",
           "options": {
-            "description": "={{ $json.text }}",
+            "description": "={{ $('Get many rows').item.json.quote }} - {{ $('Get many rows').item.json.source }}\n\n{{ $json.text }}",
             "notifySubscribers": true,
             "selfDeclaredMadeForKids": false
           }
@@ -1039,7 +1039,7 @@
       "templateCredsSetupCompleted": true
     },
     "pinData": {},
-    "versionId": "ff83351c-8e57-489e-bc2e-aade5bff8534",
+    "versionId": "1db5e9a1-6db3-41fc-a8ed-17d32b647334",
     "triggerCount": 2,
     "tags": [],
     "shared": [
