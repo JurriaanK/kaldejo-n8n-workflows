@@ -1,38 +1,12 @@
 {
   "0": {
     "createdAt": "2025-08-31T18:40:15.175Z",
-    "updatedAt": "2025-09-14T13:27:05.715Z",
+    "updatedAt": "2025-09-21T14:01:11.517Z",
     "id": "hoZQyZyX06wZi4IJ",
     "name": "Quote video's",
     "active": true,
     "isArchived": false,
     "nodes": [
-      {
-        "parameters": {
-          "method": "POST",
-          "url": "https://api.elevenlabs.io/v1/text-to-speech/hKQJeQ0pBEzU0ZIcz7Lh/with-timestamps",
-          "authentication": "predefinedCredentialType",
-          "nodeCredentialType": "elevenLabsApi",
-          "sendBody": true,
-          "specifyBody": "json",
-          "jsonBody": "={\n  \"text\": {{ $json.quote.toJsonString() }},\n  \"voice_settings\": {\n    \"speed\": 0.85\n  }\n} ",
-          "options": {}
-        },
-        "type": "n8n-nodes-base.httpRequest",
-        "typeVersion": 4.2,
-        "position": [
-          -592,
-          -112
-        ],
-        "id": "51b602e5-4ce4-49c4-b552-fe55c947dac7",
-        "name": "HTTP Request",
-        "credentials": {
-          "elevenLabsApi": {
-            "id": "yz8tZ3I48GISlRvu",
-            "name": "ElevenLabs account"
-          }
-        }
-      },
       {
         "parameters": {
           "method": "POST",
@@ -227,7 +201,7 @@
         "parameters": {
           "resource": "video",
           "operation": "upload",
-          "title": "={{ $('Get many rows').item.json.source }}",
+          "title": "=Encouraging Bible verses - {{ $('Get many rows').item.json.source }}",
           "regionCode": "US",
           "categoryId": "24",
           "options": {
@@ -351,7 +325,7 @@
         "type": "n8n-nodes-base.supabase",
         "typeVersion": 1,
         "position": [
-          -880,
+          -1184,
           -112
         ],
         "id": "e85f6a0c-df2b-40fe-9219-61075db2ec46",
@@ -506,8 +480,8 @@
         "type": "n8n-nodes-base.scheduleTrigger",
         "typeVersion": 1.2,
         "position": [
-          -1152,
-          -112
+          -1424,
+          -240
         ],
         "id": "90c43877-357d-4aa6-89a8-67f0abfc2491",
         "name": "Schedule Trigger"
@@ -517,8 +491,8 @@
         "type": "n8n-nodes-base.manualTrigger",
         "typeVersion": 1,
         "position": [
-          -1328,
-          -800
+          -1360,
+          -768
         ],
         "id": "885222e7-d1da-4b6a-81d7-d0004162e307",
         "name": "When clicking ‘Execute workflow’"
@@ -595,25 +569,95 @@
         ],
         "id": "ae6d9050-b4ca-49b6-8bf5-6aeff0d5813e",
         "name": "Generate image prompt"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "6a346507-74ca-4a93-87d8-627c81836c78",
+                "leftValue": "female",
+                "rightValue": "male",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals",
+                  "name": "filter.operator.equals"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          -832,
+          -128
+        ],
+        "id": "3ff7f0ac-5cfc-4955-85e7-e8b691ce8ef9",
+        "name": "If"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://api.elevenlabs.io/v1/text-to-speech/PrDGuu1TpdZdrpQn3pd1/with-timestamps",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "elevenLabsApi",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"text\": {{ $json.quote.toJsonString() }},\n  \"voice_settings\": {\n    \"speed\": 0.9\n  }\n} ",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -560,
+          -32
+        ],
+        "id": "8f57817f-3044-422d-a0fe-03dd844acc85",
+        "name": "Female voice",
+        "credentials": {
+          "elevenLabsApi": {
+            "id": "hKmnWsg2hFCyjwqz",
+            "name": "ElevenLabs account jurriaankoops@gmail.com"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://api.elevenlabs.io/v1/text-to-speech/hKQJeQ0pBEzU0ZIcz7Lh/with-timestamps",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "elevenLabsApi",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"text\": {{ $json.quote.toJsonString() }},\n  \"voice_settings\": {\n    \"speed\": 0.85\n  }\n} ",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -560,
+          -208
+        ],
+        "id": "51b602e5-4ce4-49c4-b552-fe55c947dac7",
+        "name": "Male voice",
+        "credentials": {
+          "elevenLabsApi": {
+            "id": "hKmnWsg2hFCyjwqz",
+            "name": "ElevenLabs account jurriaankoops@gmail.com"
+          }
+        }
       }
     ],
     "connections": {
-      "HTTP Request": {
-        "main": [
-          [
-            {
-              "node": "Create .srt",
-              "type": "main",
-              "index": 0
-            },
-            {
-              "node": "Create mp3",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
-      },
       "HTTP Request1": {
         "main": [
           [
@@ -805,12 +849,12 @@
               "index": 0
             },
             {
-              "node": "HTTP Request",
+              "node": "Generate description",
               "type": "main",
               "index": 0
             },
             {
-              "node": "Generate description",
+              "node": "If",
               "type": "main",
               "index": 0
             }
@@ -926,6 +970,56 @@
             }
           ]
         ]
+      },
+      "If": {
+        "main": [
+          [
+            {
+              "node": "Male voice",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Female voice",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Female voice": {
+        "main": [
+          [
+            {
+              "node": "Create mp3",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Create .srt",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Male voice": {
+        "main": [
+          [
+            {
+              "node": "Create .srt",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Create mp3",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
       }
     },
     "settings": {
@@ -937,7 +1031,7 @@
     "staticData": {
       "node:Schedule Trigger": {
         "recurrenceRules": [
-          8
+          16
         ]
       }
     },
@@ -945,7 +1039,7 @@
       "templateCredsSetupCompleted": true
     },
     "pinData": {},
-    "versionId": "fdfc1949-ab81-4a1e-a4eb-973e02aacb6c",
+    "versionId": "ff83351c-8e57-489e-bc2e-aade5bff8534",
     "triggerCount": 2,
     "tags": [],
     "shared": [
