@@ -1,7 +1,7 @@
 {
   "0": {
     "createdAt": "2025-09-06T12:58:53.336Z",
-    "updatedAt": "2025-09-21T14:21:51.057Z",
+    "updatedAt": "2025-09-21T14:26:37.920Z",
     "id": "hwnEcKiEfPMr5Qml",
     "name": "Send WorkFlow errors to Slack",
     "active": true,
@@ -79,7 +79,7 @@
       {
         "parameters": {
           "chatId": "690550078",
-          "text": "=This workflow {{$json[\"workflow\"][\"name\"]}} failed. Error message: {{$json[\"execution\"][\"error\"][\"message\"]}} Last node executed: {{$json[\"execution\"][\"lastNodeExecuted\"]}} View execution: {{$json[\"execution\"][\"url\"]}}",
+          "text": "=This workflow {{$json[\"workflow\"][\"name\"]}} failed.\nError message: {{$json[\"execution\"][\"error\"][\"message\"]}}\nAdditional messages: {{ $json.execution.error.messages }}\nLast node executed: {{$json[\"execution\"][\"lastNodeExecuted\"]}}\nView execution: {{$json[\"execution\"][\"url\"]}}",
           "additionalFields": {}
         },
         "type": "n8n-nodes-base.telegram",
@@ -131,7 +131,7 @@
       "templateCredsSetupCompleted": true
     },
     "pinData": {},
-    "versionId": "27d3a0b4-b8a9-4091-89e7-82d586c09ada",
+    "versionId": "126f6fb2-924e-44c5-acca-75407ebc2202",
     "triggerCount": 1,
     "tags": [],
     "shared": [
