@@ -1,0 +1,710 @@
+{
+  "0": {
+    "createdAt": "2025-09-06T09:29:34.864Z",
+    "updatedAt": "2025-09-21T14:53:42.591Z",
+    "id": "z2xoE8Na4uklD4DD",
+    "name": "System - Save Workflows to Git",
+    "active": true,
+    "isArchived": false,
+    "nodes": [
+      {
+        "parameters": {
+          "resource": "file",
+          "operation": "get",
+          "owner": "={{$node[\"Globals\"].json[\"repo\"][\"owner\"]}}",
+          "repository": "={{$node[\"Globals\"].json[\"repo\"][\"name\"]}}",
+          "filePath": "={{$node[\"Globals\"].json[\"repo\"][\"path\"]}}{{ $json.workflow_file_name }}.json",
+          "asBinaryProperty": false,
+          "additionalParameters": {}
+        },
+        "name": "GitHub",
+        "type": "n8n-nodes-base.github",
+        "position": [
+          1776,
+          -336
+        ],
+        "typeVersion": 1,
+        "alwaysOutputData": true,
+        "id": "846ec291-0799-4108-8283-2b0fec47d73d",
+        "webhookId": "5aef3a1e-bab9-46e8-9a92-57d890e68f92",
+        "credentials": {
+          "githubApi": {
+            "id": "jFBgAmndfvYB0FIu",
+            "name": "GitHub account"
+          }
+        },
+        "continueOnFail": true
+      },
+      {
+        "parameters": {},
+        "name": "Merge",
+        "type": "n8n-nodes-base.merge",
+        "position": [
+          2080,
+          -272
+        ],
+        "typeVersion": 1,
+        "id": "31c97e21-1fab-45b4-b364-b33da22a971e"
+      },
+      {
+        "parameters": {
+          "dataType": "string",
+          "value1": "={{$json[\"github_status\"]}}",
+          "rules": {
+            "rules": [
+              {
+                "value2": "same"
+              },
+              {
+                "value2": "different",
+                "output": 1
+              },
+              {
+                "value2": "new",
+                "output": 2
+              }
+            ]
+          }
+        },
+        "name": "github_status",
+        "type": "n8n-nodes-base.switch",
+        "position": [
+          2384,
+          -272
+        ],
+        "typeVersion": 1,
+        "id": "fa25fc9c-50c8-4de2-9204-cb00bc3c9517"
+      },
+      {
+        "parameters": {},
+        "name": "same",
+        "type": "n8n-nodes-base.noOp",
+        "position": [
+          2592,
+          -400
+        ],
+        "typeVersion": 1,
+        "id": "19b535d9-d146-4946-8d6f-82f94c285e69"
+      },
+      {
+        "parameters": {},
+        "name": "different",
+        "type": "n8n-nodes-base.noOp",
+        "position": [
+          2592,
+          32
+        ],
+        "typeVersion": 1,
+        "id": "c0ebf981-fbd2-4512-8d8c-4a42888f1c6c"
+      },
+      {
+        "parameters": {},
+        "name": "new",
+        "type": "n8n-nodes-base.noOp",
+        "position": [
+          2592,
+          -240
+        ],
+        "typeVersion": 1,
+        "id": "25e0d9d6-cf29-4667-9e2d-26880c2d7800"
+      },
+      {
+        "parameters": {
+          "resource": "file",
+          "operation": "edit",
+          "owner": {
+            "__rl": true,
+            "value": "={{$node[\"Globals\"].json[\"repo\"][\"owner\"]}}",
+            "mode": "name"
+          },
+          "repository": {
+            "__rl": true,
+            "value": "={{$node[\"Globals\"].json[\"repo\"][\"name\"]}}",
+            "mode": "name"
+          },
+          "filePath": "={{ $('different').item.json.path }}",
+          "fileContent": "={{$node[\"isDiffOrNew1\"].json[\"n8n_data_stringy\"]}}",
+          "commitMessage": "=Updated {{ $('Extract workflow info').item.json.workflow_name }} ({{ $('different').item.json.github_status }})\nChanges:\n{{ $json.text }}"
+        },
+        "name": "GitHub Edit",
+        "type": "n8n-nodes-base.github",
+        "position": [
+          3504,
+          32
+        ],
+        "typeVersion": 1,
+        "id": "c25a3492-cb39-4374-951f-6d4cc7400080",
+        "webhookId": "f70e9651-60d8-4fa1-8916-58e15bd76ebb",
+        "credentials": {
+          "githubApi": {
+            "id": "jFBgAmndfvYB0FIu",
+            "name": "GitHub account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "resource": "file",
+          "owner": {
+            "__rl": true,
+            "value": "={{ $('Globals').item.json.repo.owner }}",
+            "mode": "name"
+          },
+          "repository": {
+            "__rl": true,
+            "value": "={{$node[\"Globals\"].json[\"repo\"][\"name\"]}}",
+            "mode": "name"
+          },
+          "filePath": "={{$node[\"Globals\"].json[\"repo\"][\"path\"]}}{{ $('Extract workflow info').item.json.workflow_file_name }}.json",
+          "fileContent": "={{$node[\"isDiffOrNew1\"].json[\"n8n_data_stringy\"]}}",
+          "commitMessage": "=Added {{ $('Extract workflow info').item.json.workflow_name }} ({{$json[\"github_status\"]}})"
+        },
+        "name": "GitHub Create",
+        "type": "n8n-nodes-base.github",
+        "position": [
+          2800,
+          -240
+        ],
+        "typeVersion": 1,
+        "id": "d65a4476-12ed-492e-a9ff-3074852eab92",
+        "webhookId": "102d63c7-3f77-461e-ba17-a89a3a170168",
+        "credentials": {
+          "githubApi": {
+            "id": "jFBgAmndfvYB0FIu",
+            "name": "GitHub account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "batchSize": 1,
+          "options": {}
+        },
+        "name": "OneAtATime",
+        "type": "n8n-nodes-base.splitInBatches",
+        "position": [
+          416,
+          -256
+        ],
+        "typeVersion": 1,
+        "id": "5c2b9664-a942-4cd6-8dd5-999d2854d108"
+      },
+      {
+        "parameters": {
+          "values": {
+            "string": [
+              {
+                "name": "repo.owner",
+                "value": "JurriaanK"
+              },
+              {
+                "name": "repo.name",
+                "value": "kaldejo-n8n-workflows"
+              },
+              {
+                "name": "repo.path",
+                "value": "workflows/"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "name": "Globals",
+        "type": "n8n-nodes-base.set",
+        "position": [
+          160,
+          -256
+        ],
+        "typeVersion": 1,
+        "id": "d020d84d-0164-4e5f-85ef-f169f8c0cbf2"
+      },
+      {
+        "parameters": {
+          "functionCode": "// File Returned with Content\nif (Object.keys(items[0].json).includes(\"content\")) {\n  // Get JSON Objects\n  var origWorkflow = eval(\"(\"+Buffer.from(items[0].json.content, 'base64').toString()+\")\");\n  var n8nWorkflow = (items[1].json.data);\n  \n  // Order JSON Objects\n  var orderedOriginal = {}\n  var orderedActual = {}\n  \n  Object.keys(origWorkflow).sort().forEach(function(key) {\n    orderedOriginal[key] = origWorkflow[key];\n  });\n  \n  Object.keys(n8nWorkflow).sort().forEach(function(key) {\n    orderedActual[key] = n8nWorkflow[key];\n  });\n  \n  // Determine Difference\n  if ( JSON.stringify(orderedOriginal) === JSON.stringify(orderedActual) ) {\n    items[0].json.github_status = \"same\";\n    items[0].json.content_decoded = orderedOriginal;\n  } else {\n    items[0].json.github_status = \"different\";\n    items[0].json.content_decoded = orderedOriginal;\n    items[0].json.n8n_data_stringy = JSON.stringify(orderedActual, null, 2);\n  }\n// No File Returned / New Workflow\n} else {\n  // Order JSON Object\n  var n8nWorkflow = (items[1].json.data);\n  var orderedActual = {}\n  Object.keys(n8nWorkflow).sort().forEach(function(key) {\n    orderedActual[key] = n8nWorkflow[key];\n  });\n  \n  // Proper Formatting\n  items[0].json.github_status = \"new\";\n  items[0].json.n8n_data_stringy = JSON.stringify(orderedActual, null, 2);\n}\n\n// Return Items\nreturn items;"
+        },
+        "name": "isDiffOrNew1",
+        "type": "n8n-nodes-base.function",
+        "position": [
+          2240,
+          -272
+        ],
+        "typeVersion": 1,
+        "id": "f72364d8-0add-478c-b23f-4c7bdbeacc83"
+      },
+      {
+        "parameters": {
+          "inputSource": "passthrough"
+        },
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1.1,
+        "position": [
+          -64,
+          -256
+        ],
+        "id": "adec9392-5720-45c6-95f1-c4f748796a50",
+        "name": "When Executed by Another Workflow"
+      },
+      {
+        "parameters": {
+          "fileSelector": "=workflows/{{ $('OneAtATime').item.json.workflow_id }}.json",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.readWriteFile",
+        "typeVersion": 1,
+        "position": [
+          1040,
+          -256
+        ],
+        "id": "a1908170-e02d-4e76-bb95-740aee241b66",
+        "name": "Read/Write Files from Disk"
+      },
+      {
+        "parameters": {
+          "command": "=mkdir -p workflows && n8n export:workflow --id {{ $json.workflow_id }} --output workflows/{{ $json.workflow_id }}.json\n"
+        },
+        "type": "n8n-nodes-base.executeCommand",
+        "typeVersion": 1,
+        "position": [
+          848,
+          -256
+        ],
+        "id": "c4a572c7-6a1b-4986-a33b-045b77e5309e",
+        "name": "Execute Command"
+      },
+      {
+        "parameters": {
+          "operation": "fromJson",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.extractFromFile",
+        "typeVersion": 1,
+        "position": [
+          1232,
+          -256
+        ],
+        "id": "ad25aff0-5a6f-4e15-83e6-8b3184531cde",
+        "name": "Extract from File"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "5e07a933-9d5e-4382-8e03-dd78db6803c2",
+                "name": "workflow_file_name",
+                "value": "={{ $('Globals').item.json.workflow_id }}_{{ $json.data[0].name.toLowerCase().trim().replace(/[^a-z0-9-_]/gi, '-').replace(/-+/g, '-');  }}",
+                "type": "string"
+              },
+              {
+                "id": "74233adf-7b98-4c96-be48-809bfc9d1850",
+                "name": "workflow_id",
+                "value": "={{ $('Globals').item.json.workflow_id }}",
+                "type": "string"
+              },
+              {
+                "id": "1987c7ca-f6cc-4103-b8aa-c4dfa98530d9",
+                "name": "workflow_name",
+                "value": "={{ $json.data[0].name }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1488,
+          -336
+        ],
+        "id": "f1e6894b-16eb-455b-8511-d6217df500e3",
+        "name": "Extract workflow info"
+      },
+      {
+        "parameters": {
+          "jsCode": "let dworkflow = $input.first().json;\ndworkflow.data[0].pinData = {};\n// Return updated workflow JSON\nreturn [ { json: dworkflow } ];"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1488,
+          -144
+        ],
+        "id": "bdbb3a64-207b-49de-b47b-90c79c08b61d",
+        "name": "Remove Pinned data"
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "z2xoE8Na4uklD4DD",
+            "mode": "list",
+            "cachedResultName": "Update Workflows on Git"
+          },
+          "workflowInputs": {
+            "mappingMode": "defineBelow",
+            "value": {},
+            "matchingColumns": [],
+            "schema": [],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": true
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.2,
+        "position": [
+          208,
+          -528
+        ],
+        "id": "a6caf09d-ec05-4bc1-a4d1-3129bf2629cb",
+        "name": "Execute: Update Workflows on Git"
+      },
+      {
+        "parameters": {
+          "events": [
+            "update",
+            "activate"
+          ]
+        },
+        "type": "n8n-nodes-base.n8nTrigger",
+        "typeVersion": 1,
+        "position": [
+          32,
+          -528
+        ],
+        "id": "59ed8ae4-e35c-4f54-8be7-3c05e842d7cc",
+        "name": "Trigger on Activate or Active Workflow Updated"
+      },
+      {
+        "parameters": {
+          "content": "Save Workflow to Git:\n- when Activated\n- when saved while active.",
+          "height": 336,
+          "width": 496
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          -64,
+          -640
+        ],
+        "id": "f1865190-7ff0-4563-b36a-f14703ccc41e",
+        "name": "Sticky Note"
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "=<instruction>\nCompare the old version of this n8n workflow with the new one. I already included an indication where the differences are.\nOutput a compact commit message, without introduction which summarizes the functional changes. Make a list if needed. Be concise, leave out non functional details.\nDo not start with 'Commit:', just output the message.\n</instruction>\n\n<difference_indication>\n{{ $json.diff }}\n</difference_indication>\n\n<old_workflow>\n{{ $json.content_decoded.toJsonString() }}\n</old_workflow>\n\n<new_workflow>\n{{ $json.n8n_data_stringy }}\n</new_workflow>",
+          "batching": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.chainLlm",
+        "typeVersion": 1.7,
+        "position": [
+          3184,
+          32
+        ],
+        "id": "e3d93e80-541c-4f6d-9b8b-bc336ffd5401",
+        "name": "Basic LLM Chain"
+      },
+      {
+        "parameters": {
+          "model": "deepseek/deepseek-r1",
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+        "typeVersion": 1,
+        "position": [
+          3184,
+          192
+        ],
+        "id": "a4780c20-ddad-423d-b840-ee1672dfb446",
+        "name": "OpenRouter Chat Model",
+        "credentials": {
+          "openRouterApi": {
+            "id": "dVkSiVlmMOJqjixC",
+            "name": "OpenRouter account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "/**\n * n8n Code Node to Compare Two Workflow JSONs and Generate a Detailed Diff\n * This script reports the exact JSON path and the changed values.\n */\n\n// --- Input Data from n8n ---\nconst oldData = $input.first().json.content_decoded;\nconst newDataRaw = $input.first().json.n8n_data_stringy;\nconst newData = typeof newDataRaw === 'string' ? JSON.parse(newDataRaw) : newDataRaw;\n\n// --- Helper Functions ---\n\n/**\n * Recursively compares two values and returns a list of differences with full property paths and changed values.\n * @param {*} val1 - The first value.\n * @param {*} val2 - The second value.\n * @param {string} path - The current property path (e.g., \"parameters.options\").\n * @returns {string[]} An array of strings describing the differences.\n */\nfunction deepCompare(val1, val2, path) {\n    const differences = [];\n    const IGNORED_KEYS = new Set(['position', 'id', 'webhookId', 'createdAt', 'updatedAt', 'versionId', 'pinData', '__rl', 'cachedResultName']);\n\n    // Base Case: If types are different or they are not objects/arrays\n    if (typeof val1 !== typeof val2 || typeof val1 !== 'object' || val1 === null || val2 === null) {\n        if (JSON.stringify(val1) !== JSON.stringify(val2)) {\n            const strVal1 = (JSON.stringify(val1) || 'undefined').substring(0, 75);\n            const strVal2 = (JSON.stringify(val2) || 'undefined').substring(0, 75);\n            differences.push(`Property '${path}' changed from ${strVal1} to ${strVal2}`);\n        }\n        return differences;\n    }\n\n    // Handle Arrays\n    if (Array.isArray(val1)) {\n        if (!Array.isArray(val2)) {\n            differences.push(`Property '${path}' changed from an Array to something else.`);\n            return differences;\n        }\n        if (val1.length !== val2.length) {\n            differences.push(`Array '${path}' length changed from ${val1.length} to ${val2.length}.`);\n        }\n        const len = Math.min(val1.length, val2.length);\n        for (let i = 0; i < len; i++) {\n            differences.push(...deepCompare(val1[i], val2[i], `${path}[${i}]`));\n        }\n        return differences;\n    }\n\n    // Handle Objects\n    const allKeys = new Set([...Object.keys(val1), ...Object.keys(val2)]);\n    for (const key of allKeys) {\n        if (IGNORED_KEYS.has(key)) continue;\n\n        const currentPath = path ? `${path}.${key}` : key;\n        const v1 = val1[key];\n        const v2 = val2[key];\n\n        if (v1 === undefined) {\n            differences.push(`Added property '${currentPath}'.`);\n        } else if (v2 === undefined) {\n            differences.push(`Removed property '${currentPath}'.`);\n        } else {\n            differences.push(...deepCompare(v1, v2, currentPath));\n        }\n    }\n    return differences;\n}\n\n\n/**\n * Flattens the connections object into a set of readable strings for comparison.\n */\nfunction getFlatConnections(connectionsObj) {\n    const flatConnections = new Set();\n    if (!connectionsObj) return flatConnections;\n    for (const sourceNodeName in connectionsObj) {\n        if (!connectionsObj[sourceNodeName]) continue;\n        for (const outputName in connectionsObj[sourceNodeName]) {\n            const targets = connectionsObj[sourceNodeName][outputName];\n            if (!targets) continue;\n            for (const targetArr of targets) {\n                if (!targetArr) continue;\n                for (const target of targetArr) {\n                    if (target && target.node && target.type) {\n                        flatConnections.add(`\"${sourceNodeName}\" (${outputName}) -> \"${target.node}\" (${target.type})`);\n                    }\n                }\n            }\n        }\n    }\n    return flatConnections;\n}\n\n// --- Main Diff Generation Logic ---\nfunction generateDiff(oldWf, newWf) {\n    const diffReport = [];\n\n    // 1. Compare Workflow Metadata\n    if (oldWf.name !== newWf.name) {\n        diffReport.push(`- Workflow renamed from \"${oldWf.name}\" to \"${newWf.name}\".`);\n    }\n    \n    // 2. Compare Nodes\n    const oldNodesMap = (oldWf.nodes || []).reduce((acc, node) => ({ ...acc, [node.id]: node }), {});\n    const newNodesMap = (newWf.nodes || []).reduce((acc, node) => ({ ...acc, [node.id]: node }), {});\n    const allNodeIds = new Set([...Object.keys(oldNodesMap), ...Object.keys(newNodesMap)]);\n\n    for (const id of allNodeIds) {\n        const oldNode = oldNodesMap[id];\n        const newNode = newNodesMap[id];\n\n        if (!oldNode) {\n            diffReport.push(`- Node Added: \"${newNode.name}\" (Type: ${newNode.type}).`);\n        } else if (!newNode) {\n            diffReport.push(`- Node Removed: \"${oldNode.name}\" (Type: ${oldNode.type}).`);\n        } else {\n            const nodeChanges = [];\n            if (oldNode.name !== newNode.name) {\n                nodeChanges.push(`  - Renamed from \"${oldNode.name}\" to \"${newNode.name}\".`);\n            }\n            \n            const paramChanges = deepCompare(oldNode.parameters, newNode.parameters, 'parameters');\n            paramChanges.forEach(change => nodeChanges.push(`  - ${change}`));\n\n            if (nodeChanges.length > 0) {\n                diffReport.push(`- Node Modified: \"${oldNode.name}\":\\n${nodeChanges.join('\\n')}`);\n            }\n        }\n    }\n\n    // 3. Compare Connections\n    const oldConnections = getFlatConnections(oldWf.connections);\n    const newConnections = getFlatConnections(newWf.connections);\n\n    const addedConnections = [...newConnections].filter(c => !oldConnections.has(c));\n    const removedConnections = [...oldConnections].filter(c => !newConnections.has(c));\n\n    if (addedConnections.length > 0) {\n        diffReport.push(\"- Connections Added:\");\n        addedConnections.forEach(c => diffReport.push(`  - ${c}`));\n    }\n    if (removedConnections.length > 0) {\n        diffReport.push(\"- Connections Removed:\");\n        removedConnections.forEach(c => diffReport.push(`  - ${c}`));\n    }\n\n    if (diffReport.length === 0) {\n        return 'No functional changes detected.';\n    }\n\n    return `Summary of workflow changes:\\n${diffReport.join('\\n')}`;\n}\n\n\n// --- Execute and Return ---\n// The actual workflow data is nested under the \"0\" key.\nconst diffText = generateDiff(oldData['0'], newData['0']);\n\nreturn [{\n    json: {\n        ...$input.first().json, // Pass through existing data\n        diff: diffText,\n    }\n}];"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          2800,
+          32
+        ],
+        "id": "a7828f31-4d92-4675-87c9-298371c7cbb6",
+        "name": "Code"
+      }
+    ],
+    "connections": {
+      "new": {
+        "main": [
+          [
+            {
+              "node": "GitHub Create",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "same": {
+        "main": [
+          []
+        ]
+      },
+      "Merge": {
+        "main": [
+          [
+            {
+              "node": "isDiffOrNew1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "GitHub": {
+        "main": [
+          [
+            {
+              "node": "Merge",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Globals": {
+        "main": [
+          [
+            {
+              "node": "OneAtATime",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "different": {
+        "main": [
+          [
+            {
+              "node": "Code",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OneAtATime": {
+        "main": [
+          [
+            {
+              "node": "Execute Command",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "GitHub Edit": {
+        "main": [
+          []
+        ]
+      },
+      "GitHub Create": {
+        "main": [
+          []
+        ]
+      },
+      "github_status": {
+        "main": [
+          [
+            {
+              "node": "same",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "different",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "new",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "isDiffOrNew1": {
+        "main": [
+          [
+            {
+              "node": "github_status",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "When Executed by Another Workflow": {
+        "main": [
+          [
+            {
+              "node": "Globals",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Read/Write Files from Disk": {
+        "main": [
+          [
+            {
+              "node": "Extract from File",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Execute Command": {
+        "main": [
+          [
+            {
+              "node": "Read/Write Files from Disk",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Extract from File": {
+        "main": [
+          [
+            {
+              "node": "Extract workflow info",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Remove Pinned data",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Extract workflow info": {
+        "main": [
+          [
+            {
+              "node": "GitHub",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Remove Pinned data": {
+        "main": [
+          [
+            {
+              "node": "Merge",
+              "type": "main",
+              "index": 1
+            }
+          ]
+        ]
+      },
+      "Trigger on Activate or Active Workflow Updated": {
+        "main": [
+          [
+            {
+              "node": "Execute: Update Workflows on Git",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Basic LLM Chain": {
+        "main": [
+          [
+            {
+              "node": "GitHub Edit",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OpenRouter Chat Model": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "Basic LLM Chain",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Code": {
+        "main": [
+          [
+            {
+              "node": "Basic LLM Chain",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1",
+      "timezone": "Europe/Amsterdam",
+      "callerPolicy": "workflowsFromSameOwner",
+      "errorWorkflow": "hwnEcKiEfPMr5Qml"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {},
+    "versionId": "b5da1733-12d7-4405-8b8a-d480148b03ff",
+    "triggerCount": 1,
+    "tags": [],
+    "shared": [
+      {
+        "createdAt": "2025-09-06T09:29:34.864Z",
+        "updatedAt": "2025-09-06T09:29:34.864Z",
+        "role": "workflow:owner",
+        "workflowId": "z2xoE8Na4uklD4DD",
+        "projectId": "sKh7XMvKoqNv3AgS",
+        "project": {
+          "createdAt": "2025-08-13T12:38:41.348Z",
+          "updatedAt": "2025-08-13T13:46:53.556Z",
+          "id": "sKh7XMvKoqNv3AgS",
+          "name": "Jurriaan Koops <jurriaan@kaldejo.nl>",
+          "type": "personal",
+          "icon": null,
+          "description": null
+        }
+      }
+    ]
+  }
+}
