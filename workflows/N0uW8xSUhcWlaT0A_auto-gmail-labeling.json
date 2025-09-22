@@ -1,7 +1,7 @@
 {
   "0": {
     "createdAt": "2025-08-13T15:36:26.300Z",
-    "updatedAt": "2025-09-16T20:38:09.061Z",
+    "updatedAt": "2025-09-22T06:26:06.729Z",
     "id": "N0uW8xSUhcWlaT0A",
     "name": "Auto Gmail Labeling",
     "active": true,
@@ -1003,9 +1003,10 @@
       },
       "node:Gmail Trigger": {
         "Gmail Trigger": {
-          "lastTimeChecked": 1758053231,
+          "lastTimeChecked": 1758522366,
           "possibleDuplicates": [
-            "19954236c047ee5d"
+            "1996c851590b2493",
+            "1996c738d9134d28"
           ]
         }
       }
@@ -1014,7 +1015,7 @@
       "templateCredsSetupCompleted": true
     },
     "pinData": {},
-    "versionId": "37d31e70-a4fd-472e-a837-35f6f919aa8b",
+    "versionId": "80ef1da2-b207-42bc-8033-03c86401fadd",
     "triggerCount": 2,
     "tags": [],
     "shared": [
